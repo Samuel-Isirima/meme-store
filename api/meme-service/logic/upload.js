@@ -1,9 +1,18 @@
-const user_model = require("../models/user")
+const meme_model = require("../models/meme")
 
 
-const sign_up = async (data_object) => 
+const upload_meme = async (data_object) => 
 {
-    //First check if user exists
+    //First do input validation
+
+
+    //Then move the file
+
+
+    //Then upload file to AWS
+
+    
+    //Write details to DB
     try 
     {
     const user_exists = await user_model.exists({ email: data_object.email })     
@@ -19,13 +28,13 @@ const sign_up = async (data_object) =>
     
  
 
-    //Write user to database
+    //Now try creating the user
     try
     {
     const response = await user_model.create(data_object)
         if(response)
         {
-        return { code:200, message:`Account created successfully` }
+        return {code:200, message:`Account created successfully` }
         }
         else
         {
@@ -37,8 +46,6 @@ const sign_up = async (data_object) =>
     return { code:400, message:`An unexpected error has occured. Please try again later.` }
     }
     
-
-    //Automatically sign user in
     
 }
 
