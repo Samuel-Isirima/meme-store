@@ -1,8 +1,9 @@
-const express = require("express");
+const express = require("express")
 const app = express();
-const PORT = process.env.PORT_ONE || 7071;
-const mongoose = require("mongoose");
-const user = require("./models/meme")
+const PORT = process.env.PORT_ONE || 7073
+const mongoose = require("mongoose")
+const memeModel = require("./models/meme")
+const tagModel = require("./models/tag")
 const multer = require("multer")
 const cors = require('cors');
 
@@ -73,8 +74,27 @@ app.post("/api/meme/add", uploadMiddleWare.single("meme-file"), async (req, res)
 /*
 Because of the multer middleware above, the file would 
 */
-   
-console.log('Add service called')
+data = req.body
+title = data.title
+description = data.description
+
+console.log(`Add service called: title = ${title}, description = ${description}`)
+res.status(200).json({title:title, description: description})
+})
+
+
+app.post("/api/meme/tags/search", async (req, res) => 
+{
+data = req.body
+try
+{
+result = await tagModel.find({tag: {'$regex': data.query, '$options': 'i'} }).lean()
+res.status(200).json(result)
+}
+catch(error)
+{
+res.status(500).json(null)
+}
 })
 
 
@@ -82,6 +102,7 @@ console.log('Add service called')
 app.use(express.json());
 
 app.listen(PORT, () => {
-    console.log(`Auth service on port ${PORT}`);
+    console.log(`Meme service on port ${PORT}`);
 });
+
 
