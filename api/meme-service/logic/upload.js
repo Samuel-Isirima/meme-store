@@ -1,5 +1,11 @@
 const meme_model = require("../models/meme")
+const express = require("express")
+const multer = require("multer")
 
+/*
+Configure local temporary file storage location
+*/
+const uploadMiddleWare = multer({dest: "../temp-file-store/"})
 
 const upload_meme = async (data_object) => 
 {

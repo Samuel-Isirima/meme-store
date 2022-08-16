@@ -17,9 +17,18 @@ res.status(200).sendFile(path.resolve(__dirname, './contests.html'))
 })
 
 
+app.get('/upload', (req, res) => 
+{
+res.status(200).sendFile(path.resolve(__dirname, './upload-meme.html'))
+})
 
 
 
 
 
-app.listen(1200)
+
+
+app.listen(7070, ()=>
+{
+console.log('Main app root, listening on 7070')    
+})
