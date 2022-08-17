@@ -34,6 +34,6 @@ const meme_schema = mongoose.Schema({
               }
 })
 
-const meme_model = mongoose.model('Meme_Model', meme_schema)
+const meme_model = mongoose.model('memes', meme_schema)
 
 module.exports = meme_model

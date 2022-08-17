@@ -1,6 +1,6 @@
 const express = require("express")
 const app = express();
-const PORT = process.env.PORT_ONE || 7073
+const PORT = process.env.PORT_ONE || 7073	
 const mongoose = require("mongoose")
 const memeModel = require("./models/meme")
 const tagModel = require("./models/tag")
@@ -36,7 +36,7 @@ For meme uploading
 const multerFilter = (request, file, callback) => 
 {
 console.log('File type', file.mimetype.split("/")[1])
-allowedFileTypes = ["pdf","mp3","mp4","m4a","gif","png","wmv","3gp","m3u8","mov","flv","wav","jpg","tiff","jpeg"]
+allowedFileTypes = ["mp3","mp4","m4a","gif","png","wmv","3gp","m3u8","mov","flv","wav","jpg","tiff","jpeg"]
 	if (allowedFileTypes.includes(file.mimetype.split("/")[1].toLowerCase())) 
 	{
 		callback(null, true)
@@ -69,17 +69,53 @@ uploadMiddleWare =  multer({
 					fileFilter: multerFilter,
 					})
 
+audioFileExtensions = ["mp3","wma","flv","wav"]
+videoFileExtensions = ["mp4","wmv","3gp","m4a"]
+imageFileExtensions = ["jpg","gif","jpeg","png","tiff"]
+
 app.post("/api/meme/add", uploadMiddleWare.single("meme-file"), async (req, res) => 
 {
 /*
 Because of the multer middleware above, the file would 
 */
-data = req.body
-title = data.title
-description = data.description
+file_extension = req.file.mimetype.split("/")[1];
+	if(audioFileExtensions.includes(file_extension))
+	{
+		file_type = 'AUDIO'
+	}
+	else if(videoFileExtensions.includes(file_extension))
+	{
+		file_type = 'VIDEO'
+	}
+	else if(imageFileExtensions.includes(file_extension))
+	{
+		file_type = 'IMAGE'
+	}
 
-console.log(`Add service called: title = ${title}, description = ${description}`)
-res.status(200).json({title:title, description: description})
+title = req.body.title
+description = req.body.description
+
+
+try
+{
+//Create a meme entry in the database
+result = await memeModel.create({
+	title: title,
+	description: description,
+	file_type: file_type,
+	uploader: 
+			{user_uuid: "9poaincjkalskdjha8w3aseukh97w3pasfhush8awoeahr"}
+})
+
+res.status(200).json({message: "Meme successfully uploaded"})
+console.log("Meme successfully uploaded")
+}
+catch(error)
+{
+	console.log(error	)
+	res.status(500).json({message:"An unexpected error ocurred while uploading the meme. Please try again later."})
+}
+
 })
 
 

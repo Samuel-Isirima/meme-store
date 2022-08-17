@@ -254,7 +254,7 @@ const create_meme = () => {
     ajax.addEventListener("load", completeHandler, false)
     ajax.addEventListener("error", errorHandler, false)
     ajax.addEventListener("abort", abortHandler, false)
-    ajax.open(`POST`, `http://localhost:7071/api/meme/add`)
+    ajax.open(`POST`, `http://localhost:7073/api/meme/add`)
     /*
     Now set the request header
     This is because the nodejs library being used to handle file uploads in this project
