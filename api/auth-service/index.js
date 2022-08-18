@@ -3,7 +3,9 @@ const app = express();
 const PORT = process.env.PORT_ONE || 7072;
 const mongoose = require("mongoose");
 const user = require("./models/user")
-const sign_up = require("./logic/sign-up")
+const sign_up = require("./logic/sign-up");
+const user_model = require("./models/user");
+const jwt_operations = require("./logic/jwt");
 
 app.use(express.json())
 
@@ -33,6 +35,25 @@ app.post("/auth/sign-up", async (req, res) =>
 
 app.post("/auth/sign-in", async (req, res) => 
 {
+const {email, password} = req.body
+//Confirm user account
+
+    const userAccount = await user_model.find({ $where: {email: email}})
+    if(!userAccount)
+    {
+        res.status(400).json({message: "An account with this email does not exist"})
+    }
+
+    user = await user_model.find({ $where: {email: email, password: password_hash}})
+    if(!user)
+    {
+        res.status(403).json({message: "Incorrect password"})
+    }
+
+
+accessToken = jwt_operations.generateAccessToken(user)
+
+res.status(200).json({"message": "login successful", "access-token": accessToken})
 
 })
 

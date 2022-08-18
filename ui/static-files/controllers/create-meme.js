@@ -131,7 +131,7 @@ $(document).on('click', addTagButton, function (e) {
 function removeTag(tag) {
     index = tags.indexOf(tag.trim())
     tags.splice(index, 1)
-    showTags()
+    renderTags()
 }
 
 
@@ -156,12 +156,12 @@ function addTag(tag) {
         }
     }
     tags.push(tag.trim())
-    showTags()
+    renderTags()
     $(addTagButton).prop('disabled', true)
 }
 
 
-function showTags() 
+function renderTags() 
 {
     $(tags_container).empty()
     tags_UI = ''
@@ -246,6 +246,7 @@ const create_meme = () => {
 
     var form = $('#upload-meme-data')[0]
     var formdata = new FormData(form)
+    formdata.set('tags', tags)
     var ajax = new XMLHttpRequest()
     /*
     Add event listeners to watch the data upload process

@@ -29,12 +29,12 @@ const sign_up = async (data_object) =>
         }
         else
         {
-        return { code:400, message:`An error occured while trying to create your account. Please try again later.` }
+        return { code:500, message:`An error occured while trying to create your account. Please try again later.` }
         }
     }
     catch(error)
     {
-    return { code:400, message:`An unexpected error has occured. Please try again later.` }
+    return { code:500, message:`An unexpected error has occured. Please try again later.` }
     }
     
 
