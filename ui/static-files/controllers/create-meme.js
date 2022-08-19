@@ -16,7 +16,7 @@ tagSearchSuggestion = `.tss013`
 resultContainer = `.rco0`
 
 
-validationErrors = [{tag: "title", error: ""}, {tag: "description", error: ""}]
+const validationErrors = [{tag: "title", error: ""}, {tag: "description", error: ""}]
 tags = []
 title = description = ''
 

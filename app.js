@@ -32,6 +32,14 @@ res.status(200).sendFile(path.resolve(__dirname, './ui/sign-in.html'))
 
 
 
+app.get('/memes', (req, res) => 
+{
+res.status(200).sendFile(path.resolve(__dirname, './ui/memes.html'))
+})
+
+
+
+
 
 
 

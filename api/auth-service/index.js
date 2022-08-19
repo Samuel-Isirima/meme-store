@@ -6,6 +6,9 @@ const user = require("./models/user")
 const sign_up = require("./logic/sign-up");
 const user_model = require("./models/user");
 const jwt_operations = require("./logic/jwt");
+const cors = require("cors")
+
+app.use(cors({ origin: '*' }));
 
 app.use(express.json())
 
@@ -38,21 +41,21 @@ app.post("/auth/sign-in", async (req, res) =>
 const {email, password} = req.body
 //Confirm user account
 
-    const userAccount = await user_model.find({email: email})
+    const userAccount = await user_model.findOne({email: {"$regex": `^${email}$`, $options: "i"}}).lean()
     if(!userAccount)
     {
-        res.status(400).json({message: "An account with this email does not exist"})
+       return res.status(400).json({message: "An account with this email does not exist"})
     }
 
 const password_hash = password
-    userAccountObject = await user_model.findOne({email: email, password: password_hash}).lean()
+    userAccountObject = await user_model.findOne({email: {"$regex": `^${email}$`, $options: "i"}, password: password_hash}).lean()
     if(!userAccountObject)
     {
-        res.status(403).json({message: "Incorrect password"})
+        return res.status(403).json({message: "Incorrect password"})
     }
 
 accessToken = jwt_operations.generateAccessToken(userAccountObject)
-res.status(200).json({"accessToken": accessToken, "message": "login successful"})
+return res.status(200).json({"accessToken": accessToken, "message": "login successful"})
 
 })
 

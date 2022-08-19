@@ -4,7 +4,22 @@ emailInput = `.ei0`
 passwordInput = `.pi0`
 resultContainer = `.rc0`
 
-validationErrors = [{tag: "email", error: ""}, {tag: "password", error: ""}]
+const validationErrors = [{tag: "email", error: ""}, {tag: "password", error: ""}]
+
+
+const removeValidationError = (tag) =>
+{
+    const errorIndex = validationErrors.findIndex(errorEntry => 
+        {
+        return errorEntry.tag === String(tag)
+        })
+    if(errorIndex === -1)
+    {
+        return false
+    }
+    
+    return !!validationErrors.splice(errorIndex, 1);
+}
 
 
 let email
@@ -16,14 +31,21 @@ $(document).on('input', emailInput, function(e)
 })
 
 
-function emailParseFunction(value)
+const emailParseFunction = (value) =>
 {
-emailApprove = validateText(value)
-
-if (emailApprove) 
-    emailApprove = validateEmail(value)
-else
-    validationErrors.push({tag: "email", error: "Please enter a valid email"})
+    removeValidationError("email")
+    emailApprove = validateText(value)
+    if (emailApprove) 
+    {
+        
+        emailApprove = validateEmail(value)
+        if(!emailApprove)
+            validationErrors.push({tag: "email", error: "Please enter a valid email"})
+    }
+    else
+    {
+        validationErrors.push({tag: "email", error: "Please enter a valid email"})
+    }   
 
 email = value
 verifyInputs()
@@ -40,9 +62,10 @@ $(document).on('input', passwordInput, function(e)
 })
 
 
-function passwordParseFunction(value)
+const passwordParseFunction = (value) =>
 {
-passwordApprove = validateText(value)
+    removeValidationError("password")
+    passwordApprove = validateText(value)
 
 if (!passwordApprove) 
     validationErrors.push({tag: "password", error: "Please enter a valid password"})
@@ -62,7 +85,7 @@ const verifyInputs = () =>
     //Check for errors
     if(validationErrors.length > 0)
     {
-        $(resultContainer).append(`<p style="color: red;">${validationErrors[0].error}</p>`)
+        $(resultContainer).append(`<p style="color: red;">${validationErrors[validationErrors.length - 1].error}</p>`)
         $(signInButton).prop('disabled', true)
     }
     else
@@ -79,7 +102,7 @@ sign_in()
 })
 
 
-const sign_in = () => 
+const sign_in = async () => 
 {
     /*
     Avoid multiple requests
@@ -88,7 +111,7 @@ const sign_in = () =>
     if (signInProcessing)
         return
 signInProcessing = true
-$(signInButton).prop('disabled', true)
+$(signInButton).hide()
 $(resultContainer).empty()
 showLoader(resultContainer)
 
@@ -103,18 +126,24 @@ const fetchOptions =
         body: JSON.stringify(body)
     }
 
-fetch("http://localhost:7030/sign-in", fetchOptions)
-.then((data) => 
+response = await fetch("http://localhost:7072/auth/sign-in", fetchOptions)
+data = await response.json()
+removeLoader(resultContainer)
+signInProcessing = false
+if(response.status != 200)
 {
-    return data.json()
-})
-.then((credentials) =>
-{
-    const accessToken = credentials.accessToken
-    //Write token to cookie
-    setCookie("authAccessToken", accessToken, 30)
-})
+    $(resultContainer).append(`<p style="color: red;">${data.message}</p>`)
+    $(signInButton).show()
+    return
 }
+
+$(resultContainer).append(`<p style="color: green;">${data.message}</p>`)
+const accessToken = data.accessToken
+//Write token to cookie
+setCookie("authAccessToken", accessToken, 30)
+
+}
+
 
 
 
