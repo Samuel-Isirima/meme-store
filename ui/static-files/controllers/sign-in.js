@@ -54,10 +54,6 @@ verifyInputs()
 
 
 
-
-verifyInputs()
-
-
 const verifyInputs = () =>
 {
 
@@ -75,6 +71,7 @@ const verifyInputs = () =>
     }
 }
 
+verifyInputs()
 
 $(document).on('click', signInButton, function (event) 
 {
@@ -107,17 +104,35 @@ const fetchOptions =
     }
 
 fetch("http://localhost:7030/sign-in", fetchOptions)
-.then()
-.then()
+.then((data) => 
+{
+    return data.json()
+})
+.then((credentials) =>
+{
+    const accessToken = credentials.accessToken
+    //Write token to cookie
+    setCookie("authAccessToken", accessToken, 30)
+})
 }
 
 
 
 
-const validateText = (text) =>
+function validateText(text)
 {
     if(text == '' || text == undefined || text == null || text == ' ')
 	{return false}
 	else
 	{return true}
 }
+
+
+function validateEmail(email) 
+{
+const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+return re.test(email);
+}
+
+
+

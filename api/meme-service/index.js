@@ -6,7 +6,7 @@ const memeModel = require("./models/meme")
 const tagModel = require("./models/tag")
 const multer = require("multer")
 const cors = require('cors');
-
+const authorization = require('../auth-service/logic/jwt')
 /*
 Cors for allowing cross site requests
 */
@@ -122,6 +122,8 @@ catch (error)
 	})
 
 
+
+
 app.post("/api/meme/tags/search", async (req, res) => {
 	data = req.body
 	try {
@@ -135,7 +137,22 @@ app.post("/api/meme/tags/search", async (req, res) => {
 
 
 
-app.use(express.json());
+app.post("/api/memes/", authorization.authenticateAccessToken, async (req, res) => {
+	data = req.body
+	try {
+		result = await memeModel.find({})
+		res.status(200).json(result)
+	}
+	catch (error) 
+	{
+		res.status(500).json(null)
+	}
+})
+
+
+
+
+
 
 app.listen(PORT, () => {
 	console.log(`Meme service on port ${PORT}`);

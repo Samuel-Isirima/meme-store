@@ -38,22 +38,21 @@ app.post("/auth/sign-in", async (req, res) =>
 const {email, password} = req.body
 //Confirm user account
 
-    const userAccount = await user_model.find({ $where: {email: email}})
+    const userAccount = await user_model.find({email: email})
     if(!userAccount)
     {
         res.status(400).json({message: "An account with this email does not exist"})
     }
 
-    user = await user_model.find({ $where: {email: email, password: password_hash}})
-    if(!user)
+const password_hash = password
+    userAccountObject = await user_model.findOne({email: email, password: password_hash}).lean()
+    if(!userAccountObject)
     {
         res.status(403).json({message: "Incorrect password"})
     }
 
-
-accessToken = jwt_operations.generateAccessToken(user)
-
-res.status(200).json({"message": "login successful", "access-token": accessToken})
+accessToken = jwt_operations.generateAccessToken(userAccountObject)
+res.status(200).json({"accessToken": accessToken, "message": "login successful"})
 
 })
 

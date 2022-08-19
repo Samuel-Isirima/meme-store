@@ -4,9 +4,8 @@ const jwt = require("jsonwebtoken")
 
 const generateAccessToken = (userObject) =>
 {
-    const accessToken = jwt.sign(userObject, process.env.ACCESS_TOKEN_SECRET, {
-        expiresIn: "20m"
-    })
+    const accessToken = jwt.sign(userObject, process.env.ACCESS_TOKEN_SECRET, {})
+    return accessToken
 } 
 
 const authenticateAccessToken = (req, res, next) =>
@@ -21,7 +20,7 @@ const authorizationHeader = req.headers["authorization"]
 //Now check if there actually is an authorization header in the request
 if(!authorizationHeader)
     {
-       return res.status(401).json({message: "No authorization header sent in request. Refere to documenation for help."})
+       return res.status(401).json({message: "No authorization header sent in request. Refer to documenation for help."})
     }
 else
     {
