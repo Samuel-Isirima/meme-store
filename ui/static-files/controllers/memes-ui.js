@@ -15,11 +15,65 @@ const imageMemeUI = (memeObject) =>
 
 const audioMemeUI = (memeObject) =>
 {
-    
+return ` <div class="col-6 col-lg-3">
+        <div class="popular-item" uier=meme-${memeObject._id} style="text-align: center;">
+            <div class="thumb" uier=meme-${memeObject._id}>
+        <audio class="MS-audio-${memeObject._id}" controls>
+        <source src="${memeObject.url}" type="${memeObject.mime}/>
+        </audio>
+            <span class="category">${memeObject.title}</span>
+            <span class="likes"><i class="fa fa-heart"></i> 256</span>
+            <span class="see-details"><a href="meme/${memeObject.title.replace(" ","-")}/${memeObject.id}">Details</a></span>  
+        </div>
+    </div>
+</div>`    
 }
 
 
 const videoMemeUI = (memeObject) =>
 {
-    
+    return ` <div class="col-6 col-lg-3">
+                <div class="popular-item" uier=meme-${memeObject._id} style="text-align: center;">
+                    <div class="thumb" uier=meme-${memeObject._id}>
+                    <video class="MS-video-${memeObject._id}" playsinline uier=meme-${memeObject._id} controls data-poster="assets/images/guitar.jpeg">
+                    <source src="${memeObject.url}" type="${memeObject.mime}" />
+                    </video>
+                    <span class="category">${memeObject.title}</span>
+                    <span class="likes"><i class="fa fa-heart"></i> 256</span>
+                    <span class="see-details"><a href="meme/${memeObject.title.replace(" ","-")}/${memeObject.id}">Details</a></span>  
+                </div>
+                </div>
+            </div>`    
+        
+}
+
+
+
+const errorMemeUI = (memeObject) =>
+{
+    return ` <div class="col-6 col-lg-3">
+                <div class="popular-item" style="text-align: center;">
+                    <div class="thumb">
+                    An unexpected error has occured.
+                    <span class="category"></span>
+                    <span class="likes"><i class="fa fa-heart"></i> 256</span>
+                    <span class="see-details"><a>Details</a></span>  
+                </div>
+                </div>
+            </div>`    
+        
+}
+
+const pageButtonUI = (index, currentPage) =>
+{
+    selectedPageButton = currentPage? 'selected-page-button' : ''
+    return `<button class="btn btn-primary ${selectedPageButton}" value="${index}">${index}</button>`
+}
+
+
+const viewPortUI = (memesUI) =>
+{
+    return `<div class = "row mc0">
+            ${memesUI}
+            </div>`
 }

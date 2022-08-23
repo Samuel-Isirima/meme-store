@@ -1,55 +1,21 @@
-const { response } = require("express")
-
 const memesContainer = `.mc0`
 var memesIDsHolder = {}
 var viewPorts = {}
+currentPageIndex = 1
+const pageButton = `.pn-sb0`
+const pageButtonsContainer = `.page-buttons-container`
+const allowedNumberOfMemesPerPage = 1
+const paginationContainer = `.pcon0`
+const videoMemeElement = `.vidMeme`
+const viewPortContainer = `.vpC0`
+const textResultContainer = `.trc0`
 
-const fetchMemes = async (pageIndex, dataSet) =>
+
+
+
+const renderViewPort = (pageIndex) =>
 {
-$(`${pageButton}-${currentPageIndex}`).prop('disabled', true)
-fetchOptions = {
-                method: "POST",
-                headers: {
-                         "Content-Type": "application/json",
-                         "authorization": getCookie("authAccessToken")
-                         },
-                body: JSON.stringify(dataSet)
-               }
-response = await fetch("https://localhost:7073/memes")
-data = await response.json()
-
-removeLoader(memesContainer)
-fetchingMemes = false
-if(response.status != 200)
-{
-    $(memesContainer).append(`<p style="color: red;">${data.message}</p>`)
-    $(`${pageButton}-${currentPageIndex}`).prop('disabled', false)
-    return
-}
-
-renderMemes(data.memes)
-}
-
-
-const renderMemes = (memes) =>
-{
-thisPageMemes = []
-memesUI = ''
-
-Object.keys(memes).forEach((entry) => 
-    {
-    thisPageMemes.push(entry.__ID)
-    memesUI += renderMeme(entry)
-    })
-thisPageViewPort = viewPortUI(memesUI)
-
-memesIDsHolder.currentPageIndex = null
-memesIDsHolder.currentPageIndex = thisPageMemes
-
-viewPorts.currentPageIndex = null
-viewPorts.currentPageIndex = viewPortUI
-
-renderViewPort()
+    $(viewPortContainer).prepend(viewPorts[pageIndex])
 }
 
 const renderMeme = (meme) =>
@@ -78,6 +44,60 @@ const renderMeme = (meme) =>
 }
 
 
+
+const renderMemes = (memes, pageNumber) =>
+{
+thisPageMemes = []
+memesUI = ''
+
+Object.keys(memes).forEach((key) => 
+    {
+    thisPageMemes.push(memes[key].__ID)
+    memesUI += renderMeme(memes[key])
+    })
+thisPageViewPort = viewPortUI(memesUI)
+
+memesIDsHolder[currentPageIndex] = null
+memesIDsHolder[currentPageIndex] = thisPageMemes
+
+viewPorts[currentPageIndex] = null
+viewPorts[currentPageIndex] = thisPageViewPort
+renderViewPort(pageNumber)
+}
+
+
+const fetchMemes = async (pageIndex, dataSet) =>
+{
+currentPageIndex = pageIndex
+$(`${pageButton}-${currentPageIndex}`).prop('disabled', true)
+fetchOptions = {
+                method: "POST",
+                headers: {
+                         "Content-Type": "application/json",
+                         "authorization": getCookie("authAccessToken")
+                         },
+                body: JSON.stringify(dataSet)
+               }
+response = await fetch("http://localhost:7073/api/memes", fetchOptions)
+data = await response.json()
+
+removeLoader(textResultContainer)
+fetchingMemes = false
+if(response.status != 200)
+{
+    $(textResultContainer).append(`<p style="color: red;">${data.message}</p>`)
+    $(`${pageButton}-${currentPageIndex}`).prop('disabled', false)
+    return
+}
+
+renderPageButtons(data.total_number_of_memes,1)
+renderMemes(JSON.parse(data.memes), currentPageIndex)
+}
+
+
+
+
+
 $(document).on('click', pageButton, (event) =>
 {
     event.preventDefault()  //Prevent page reload
@@ -89,9 +109,18 @@ $(document).on('click', pageButton, (event) =>
         })
     if(viewPortIndex === -1)
     {
-        
+        //Viewport doesn't exist
+        fetchMemes(pageIndex, memesIDsHolder)
+        return
+    }
+    else
+    {
+        //Viewport has already been rendered before, so it already exists
+        renderViewPort(pageIndex)
+        return
     }
 })
+
 /*
 Pagination implementation:
 
@@ -148,3 +177,94 @@ IDsHolderObject = [
 pageNumber
 */
 
+//Define long click event for previewing videos
+
+$.fn.longClick = function(callback, timeout) {
+    var timer;
+    timeout = timeout || 500
+    $(this).mousedown(function() {
+        timer = setTimeout(function() { callback() }, timeout)
+        return false
+    });
+    $(document).mouseup(function() {
+        clearTimeout(timer)
+        return false
+    });
+}
+
+
+
+$(videoMemeElement).longClick(function()
+{
+thisMeme = $(this).prop('m-id0')
+initMediaPlayer(thisMeme)    
+})
+
+
+//Initialize media player for video and audio preview
+
+const initMediaPlayer = (memeSelector) =>
+{
+const Plyr = new Plyr(memeSelector, 
+    {
+        autoplay: true,
+        volume: 1,
+        disableContextMenu: true,
+        resetOnEn: true,
+        duration: 10,
+        previewThumbnails: { 
+            enabled: false, 
+            src: '' 
+        }
+    })
+Plyr.play()
+}
+
+
+
+
+const renderPageButtons = (numberOfItems, pageIndex) =>
+{
+/* 
+If the number of pages is less than 5, show 1,2,3 or 4 buttons as the case may be
+
+Show five buttons
+3 for the previous pages
+1 for the current page
+1 for the next page
+
+If there are less than 5, show 1 for the current page and [1,2,3] for the previous page(s), no next page
+If there are less than 5 and current page is page 1, show 1 for current page and [1,2,3] for the next page, no previous page
+If there are more than 5 and the current page is 1, show 1 for the current page and [4] for the next pages
+If there are more than 5 and the current page is 4, show 3 for previous pages, 1 for current page and 1 for next page 
+*/
+numberOfPages = numberOfItems/allowedNumberOfMemesPerPage
+addOne = numberOfItems%allowedNumberOfMemesPerPage == 0? 0 : 1  //Get and account for possbile remainder
+numberOfPages += addOne
+
+pageButtons = []
+anyNextPage = numberOfPages > pageIndex
+numberOfNextPages = numberOfPages - pageIndex
+anyPreviousPage = pageIndex > 1
+numberOfPreviousPages = pageIndex - 1
+
+//Generate previous pages buttons
+for(i = numberOfPreviousPages; i > 0; i--)
+{
+    pageButtons.push(pageButtonUI(i, false))
+}
+//Generate the current page button
+pageButtons.push(pageButtonUI(pageIndex, true))
+
+//Generate next pages buttons
+for(i = 1; i <= numberOfNextPages; i++)
+{
+    pageButtons.push(pageButtonUI(pageIndex+i, false))
+}
+
+$(paginationContainer).empty()
+$(paginationContainer).append(pageButtons)
+}
+
+
+fetchMemes(1, memesIDsHolder)

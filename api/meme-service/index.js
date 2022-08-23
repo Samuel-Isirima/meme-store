@@ -91,6 +91,7 @@ app.post("/api/meme/add", uploadMiddleWare.single("meme-file"), async (req, res)
 			description: description,
 			file_type: file_type,
 			tags: tags,
+			mime: file_extension,
 			uploader: { user_uuid: "9poaincjkalskdjha8w3aseukh97w3pasfhush8awoeahr" }
 		})
 
@@ -137,15 +138,26 @@ app.post("/api/meme/tags/search", async (req, res) => {
 
 
 
-app.post("/api/memes/", authorization.authenticateAccessToken, async (req, res) => {
+app.post("/api/memes", async (req, res) => {
+	/*
+	the authorization.authenticateAccessToken middleware wouldn't be used for this route because
+	while I want to keep track of who views the various pages by their id/accessToken, this route
+	is also public, and does not require authentication.
+	Hence, just get the access token from the header if it exists
+	*/
+
+	accessToken = req.headers['authorization']? req.headers['authorization'].split(' ')[1] : null
 	data = req.body
+	console.log('Data: ',data)
 	try {
 		result = await memeModel.find({})
-		res.status(200).json(result)
+		numberOfMemesInDB = await memeModel.countDocuments() 	//For paginatino purposes. Update: this is redundant: Fix this
+		
+		res.status(200).json({memes: JSON.stringify(result), message: "Memes fetched successfully", total_number_of_memes: numberOfMemesInDB})
 	}
 	catch (error) 
 	{
-		res.status(500).json(null)
+		res.status(500).json({message: "An unexpected error has occured. Please try again later."})
 	}
 })
 
