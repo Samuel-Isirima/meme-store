@@ -1,6 +1,6 @@
 const memesContainer = `.mc0`
 var memesIDsHolder = {}
-var viewPorts = {}
+var viewPorts = []
 currentPageIndex = 1
 const pageButton = `.pn-sb0`
 const pageButtonsContainer = `.page-buttons-container`
@@ -9,13 +9,26 @@ const paginationContainer = `.pcon0`
 const videoMemeElement = `.vidMeme`
 const viewPortContainer = `.vpC0`
 const textResultContainer = `.trc0`
+var totalNumberOfMemes
 
 
 
 
 const renderViewPort = (pageIndex) =>
 {
-    $(viewPortContainer).prepend(viewPorts[pageIndex])
+    var viewPortIndex = viewPorts.findIndex(viewPortEntry => 
+        {
+        return viewPortEntry.pageIndex === pageIndex
+        })
+    if(viewPortIndex === -1)
+    {
+        //Viewport doesn't exist
+        return false
+    }
+
+    $(viewPortContainer).prepend(viewPorts[viewPortIndex].markup)
+    renderPageButtons(totalNumberOfMemes, pageIndex)
+
 }
 
 const renderMeme = (meme) =>
@@ -60,8 +73,7 @@ thisPageViewPort = viewPortUI(memesUI)
 memesIDsHolder[currentPageIndex] = null
 memesIDsHolder[currentPageIndex] = thisPageMemes
 
-viewPorts[currentPageIndex] = null
-viewPorts[currentPageIndex] = thisPageViewPort
+viewPorts.push({pageIndex: pageNumber, markup: thisPageViewPort})
 renderViewPort(pageNumber)
 }
 
@@ -76,7 +88,7 @@ fetchOptions = {
                          "Content-Type": "application/json",
                          "authorization": getCookie("authAccessToken")
                          },
-                body: JSON.stringify(dataSet)
+                body: JSON.stringify({numberOfItemsToFetch: allowedNumberOfMemesPerPage, alreadyFetchedMemes: dataSet})
                }
 response = await fetch("http://localhost:7073/api/memes", fetchOptions)
 data = await response.json()
@@ -90,7 +102,7 @@ if(response.status != 200)
     return
 }
 
-renderPageButtons(data.total_number_of_memes,1)
+totalNumberOfMemes = data.totalNumberOfMemes
 renderMemes(JSON.parse(data.memes), currentPageIndex)
 }
 
@@ -100,12 +112,13 @@ renderMemes(JSON.parse(data.memes), currentPageIndex)
 
 $(document).on('click', pageButton, (event) =>
 {
-    event.preventDefault()  //Prevent page reload
-    pageIndex = $(this).prop('page-index')
+    element = event.target
+    console.log(element)
+    pageIndex = $(element).attr('page-index')
     //First check if the page already has an entry in the view port object
     var viewPortIndex = viewPorts.findIndex(viewPortEntry => 
         {
-        return viewPortEntry.index === pageIndex
+        return viewPortEntry.pageIndex === pageIndex
         })
     if(viewPortIndex === -1)
     {

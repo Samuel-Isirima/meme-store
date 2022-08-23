@@ -67,7 +67,7 @@ const errorMemeUI = (memeObject) =>
 const pageButtonUI = (index, currentPage) =>
 {
     selectedPageButton = currentPage? 'selected-page-button' : ''
-    return `<button class="btn btn-primary ${selectedPageButton}" value="${index}">${index}</button>`
+    return `<button class="pn-sb0 btn btn-primary ${selectedPageButton}" page-index=${index} value="${index}">${index}</button>`
 }
 
 
