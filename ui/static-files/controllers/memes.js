@@ -26,6 +26,7 @@ const renderViewPort = (pageIndex) =>
         return false
     }
 
+    $('.view-port').hide(100)    //Update: add a fade out animation
     $(viewPortContainer).prepend(viewPorts[viewPortIndex].markup)
     renderPageButtons(totalNumberOfMemes, pageIndex)
 
@@ -33,6 +34,7 @@ const renderViewPort = (pageIndex) =>
 
 const renderMeme = (meme) =>
 {
+    console.log(meme)
     switch(meme.file_type)
         {
         case "IMAGE": 
@@ -65,7 +67,7 @@ memesUI = ''
 
 Object.keys(memes).forEach((key) => 
     {
-    thisPageMemes.push(memes[key].__ID)
+    thisPageMemes.push(memes[key]._id)
     memesUI += renderMeme(memes[key])
     })
 thisPageViewPort = viewPortUI(memesUI)
@@ -80,6 +82,25 @@ renderViewPort(pageNumber)
 
 const fetchMemes = async (pageIndex, dataSet) =>
 {
+/*
+Flatten out the dataset holding the ids
+
+It is in this format
+{
+    1: [2,4,5,6],
+    2: [1,4,6,7],
+    ...
+}
+but needs to be in one array like so
+
+[1,2,4,5,6,7]
+*/
+var flatDataSet = []
+Object.keys(dataSet).forEach((key) => 
+{
+flatDataSet = flatDataSet.concat(dataSet[key])
+})
+
 currentPageIndex = pageIndex
 $(`${pageButton}-${currentPageIndex}`).prop('disabled', true)
 fetchOptions = {
@@ -88,7 +109,7 @@ fetchOptions = {
                          "Content-Type": "application/json",
                          "authorization": getCookie("authAccessToken")
                          },
-                body: JSON.stringify({numberOfItemsToFetch: allowedNumberOfMemesPerPage, alreadyFetchedMemes: dataSet})
+                body: JSON.stringify({numberOfItemsToFetch: allowedNumberOfMemesPerPage, alreadyFetchedMemes: flatDataSet})
                }
 response = await fetch("http://localhost:7073/api/memes", fetchOptions)
 data = await response.json()
@@ -115,6 +136,7 @@ $(document).on('click', pageButton, (event) =>
     element = event.target
     console.log(element)
     pageIndex = $(element).attr('page-index')
+
     //First check if the page already has an entry in the view port object
     var viewPortIndex = viewPorts.findIndex(viewPortEntry => 
         {
@@ -258,25 +280,69 @@ numberOfPages += addOne
 pageButtons = []
 anyNextPage = numberOfPages > pageIndex
 numberOfNextPages = numberOfPages - pageIndex
+console.log('NN ',numberOfPages)
 anyPreviousPage = pageIndex > 1
-numberOfPreviousPages = pageIndex - 1
+var numberOfPreviousPages = 0
 
-//Generate previous pages buttons
-for(i = numberOfPreviousPages; i > 0; i--)
-{
-    pageButtons.push(pageButtonUI(i, false))
-}
-//Generate the current page button
-pageButtons.push(pageButtonUI(pageIndex, true))
+numberOfPageButtonsAllowed = 5
 
-//Generate next pages buttons
-for(i = 1; i <= numberOfNextPages; i++)
+
+if(pageIndex < numberOfPageButtonsAllowed)
 {
-    pageButtons.push(pageButtonUI(pageIndex+i, false))
+    if(numberOfPages > 4)
+        numberOfNextPages = numberOfPageButtonsAllowed - pageIndex
+    else
+        numberOfNextPages = numberOfPages - numberOfPageButtonsAllowed
+
+    numberOfPreviousPages = numberOfPageButtonsAllowed - numberOfNextPages - 1
+
+     //Generate previous pages buttons
+     for(i = 1; i <= pageIndex-1; i++)
+         pageButtons.push(pageButtonUI(i, false))
+     
+     //Generate the current page button
+     pageButtons.push(pageButtonUI(pageIndex, true))
+ 
+     //Generate next pages buttons
+     for(i = 1; i < numberOfNextPages+1; i++)
+         pageButtons.push(pageButtonUI( parseInt(pageIndex) + parseInt(i), false))
+     
 }
+else
+{
+    if(numberOfNextPages > 1)
+        numberOfNextPages = 1
+    
+    numberOfPreviousPages = numberOfPageButtonsAllowed - numberOfNextPages - 1
+    
+    //Generate previous pages buttons
+    for(i = pageIndex-1, a = numberOfPreviousPages; a > 0; i--, a--)
+    {
+        pageButtons.push(pageButtonUI(i, false))
+        pageButtons.reverse()
+    }
+    
+    //Generate the current page button
+    pageButtons.push(pageButtonUI(pageIndex, true))
+
+    //Generate next pages buttons
+    for(i = 1; i <= numberOfNextPages; i++)
+        pageButtons.push(pageButtonUI( parseInt(pageIndex) + parseInt(i), false))
+
+}
+
+
+
 
 $(paginationContainer).empty()
+
+if(pageIndex - numberOfPreviousPages > 1) //Add left / less button
+        $(paginationContainer).prepend(leftShiftPageButtonUI(--pageIndex))
+
 $(paginationContainer).append(pageButtons)
+
+if(pageIndex + numberOfNextPages < numberOfPages) //Add right / greater button
+        $(paginationContainer).append(rightShiftPageButtonUI(++pageIndex))
 }
 
 

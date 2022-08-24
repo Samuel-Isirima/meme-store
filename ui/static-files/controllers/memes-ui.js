@@ -71,9 +71,24 @@ const pageButtonUI = (index, currentPage) =>
 }
 
 
+const leftShiftPageButtonUI = (index) =>
+{
+    return `<button class="pn-sb0 btn btn-primary" page-index=${index} value="${index}"><</button>`
+}
+
+
+
+const rightShiftPageButtonUI = (index) =>
+{
+    return `<button class="pn-sb0 btn btn-primary" page-index=${index} value="${index}">></button>`
+}
+
+
+
+
 const viewPortUI = (memesUI) =>
 {
-    return `<div class = "row mc0">
+    return `<div class = "row mc0 view-port">
             ${memesUI}
             </div>`
 }

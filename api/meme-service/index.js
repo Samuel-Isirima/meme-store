@@ -150,9 +150,9 @@ app.post("/api/memes", async (req, res) => {
 	data = req.body
 	alreadySentMemes = data.alreadyFetchedMemes
 	numberOfItemsToFetch = data.numberOfItemsToFetch
-	console.log(alreadySentMemes)
+	console.log('Already sent memes', alreadySentMemes)
 	try {
-		result = await memeModel.find({__id: {$nin: alreadySentMemes}}).limit(numberOfItemsToFetch)
+		result = await memeModel.find({_id: {$nin: alreadySentMemes}}).limit(numberOfItemsToFetch)
 		numberOfMemesInDB = await memeModel.countDocuments() 	//For paginatino purposes. Update: this is redundant: Fix this
 		
 		res.status(200).json({memes: JSON.stringify(result), message: "Memes fetched successfully", totalNumberOfMemes: numberOfMemesInDB})
