@@ -10,6 +10,7 @@ const videoMemeElement = `.vidMeme`
 const viewPortContainer = `.vpC0`
 const textResultContainer = `.trc0`
 var totalNumberOfMemes
+const numberOfTrendingMemes = 15
 
 
 
@@ -26,7 +27,7 @@ const renderViewPort = (pageIndex) =>
         return false
     }
 
-    $('.view-port').hide(100)    //Update: add a fade out animation
+    $('.view-port').hide(0)    //Update: add a fade out animation
     $(viewPortContainer).prepend(viewPorts[viewPortIndex].markup)
     renderPageButtons(totalNumberOfMemes, pageIndex)
 
@@ -82,6 +83,7 @@ renderViewPort(pageNumber)
 
 const fetchMemes = async (pageIndex, dataSet) =>
 {
+showLoader(textResultContainer)
 /*
 Flatten out the dataset holding the ids
 
@@ -332,18 +334,56 @@ else
 }
 
 
-
-
 $(paginationContainer).empty()
-
-if(pageIndex - numberOfPreviousPages > 1) //Add left / less button
-        $(paginationContainer).prepend(leftShiftPageButtonUI(--pageIndex))
-
+$(paginationContainer).prepend(leftShiftPageButtonUI(--pageIndex))  //Add left/less button
 $(paginationContainer).append(pageButtons)
+$(paginationContainer).append(rightShiftPageButtonUI(++pageIndex+1))  //Add right/greater button
 
-if(pageIndex + numberOfNextPages < numberOfPages) //Add right / greater button
-        $(paginationContainer).append(rightShiftPageButtonUI(++pageIndex))
+if(numberOfPreviousPages > 0) //Enable left/less button
+    $(`.left-shift`).prop(`disabled`, false)
+
+if(pageIndex < numberOfPages) //Enable right/greater button
+    $(`.right-shift`).prop(`disabled`, false)
 }
 
 
-fetchMemes(1, memesIDsHolder)
+fetchMemes("1", memesIDsHolder)
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                                        //This Part is for trending memes
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+const renderTrendingMemes = (memes) =>
+{
+Object.entries(memes).forEach((entry) =>
+{
+memeElement = trendingMemeUI(meme)
+$(trendingMemesCarousel).owlCarousel('add', memeElement).owlCarousel('update')
+})
+}
+
+
+
+const fetchTrendingMemes = async () =>
+{
+showLoader(trendingMemesContainer)
+fetchOptions = {
+                method: "POST",
+                headers: {
+                         "Content-Type": "application/json",
+                         "authorization": getCookie("authAccessToken")
+                         },
+                body: JSON.stringify({numberOfItemsToFetch: numberOfTrendingMemes})
+               }
+response = await fetch("http://localhost:7073/api/memes/trending", fetchOptions)
+data = await response.json()
+
+removeLoader(trendingMemesContainer)
+if(response.status != 200)
+{
+    $(trendingMemesContainer).append(`<p style="color: red;">${data.message}</p>`)
+}
+
+renderTrendingMemes(JSON.parse(data.memes))
+}
+

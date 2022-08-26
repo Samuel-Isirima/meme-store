@@ -73,14 +73,14 @@ const pageButtonUI = (index, currentPage) =>
 
 const leftShiftPageButtonUI = (index) =>
 {
-    return `<button class="pn-sb0 btn btn-primary" page-index=${index} value="${index}"><</button>`
+    return `<button class="pn-sb0 left-shift btn btn-primary" page-index=${index} value="${index}" disabled><</button>`
 }
 
 
 
 const rightShiftPageButtonUI = (index) =>
 {
-    return `<button class="pn-sb0 btn btn-primary" page-index=${index} value="${index}">></button>`
+    return `<button class="pn-sb0 right-shift btn btn-primary" page-index=${index} value="${index}" disabled>></button>`
 }
 
 

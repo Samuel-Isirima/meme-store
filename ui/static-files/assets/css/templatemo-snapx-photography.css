@@ -1023,63 +1023,69 @@ section.featured-items {
 
 }
 
-.featured-items .item .thumb:hover .hover-effect {
+.featured-items .item .thumb:hover .trending-details {
   top: 0;
   opacity: 1;
 }
 
-.featured-items .item .thumb .hover-effect {
-  background-color: rgba(250,250,250,0.92);
+
+.featured-items .item .thumb:hover .trending-details .trending-actual-details {
+  top: 25%;
+  transition: all .4s;
+}
+
+.featured-items .item .thumb .trending-details {
+  background-color: rgba(250,250,250,0.65);
   left: 0;
-  top: 100%;
+  top: 79%;
   width: 100%;
   height: 100%;
-  border-radius: 3px;
+  border-radius: 5px;
   position: absolute;
-  opacity: 0;
+  opacity: 1;
   transition: all .3s;
 }
 
-.featured-items .item .thumb .hover-effect .content {
+.featured-items .item .thumb .trending-details .trending-actual-details {
   text-align: center;
   position: absolute;
   width: 100%;
-  top: 50%;
-  transform: translateY(-50%);
+  top: 1%;
+  /* transform: translateY(-50%); */
   padding: 0px 15px;
 }
 
-.featured-items .item .thumb .hover-effect .content h4 {
+.featured-items .item .thumb .trending-details .trending-actual-details h4 {
   font-size: 20px;
-  color: #00bdfe;
-  margin-bottom: 22px;
+  color: #6b7488;
+  margin-bottom: 5px;
 }
 
-.featured-items .item .thumb .hover-effect .content h4 i {
+.featured-items .item .thumb .trending-details .trending-actual-details h4 i {
   font-size: 14px;
   margin-left: 5px;
   font-weight: 600;
 }
 
-.featured-items .item .thumb .hover-effect .content h4 span {
+.featured-items .item .thumb .trending-details .trending-actual-details span {
   font-size: 14px;
   font-weight: 500;
-  color: #afafaf;
+  color: #67678d;
 }
 
-.featured-items .item .thumb .hover-effect .content ul li {
+.featured-items .item .thumb .trending-details .trending-actual-details ul li {
   font-size: 15px;
   font-weight: 400;
   color: #afafaf;
   margin-bottom: 7px;
 }
 
-.featured-items .item .thumb .hover-effect .content ul li:last-child {
+.featured-items .item .thumb .trending-details .trending-actual-details ul li:last-child {
   margin-bottom: 0px;
 }
 
-.featured-items .item .thumb .hover-effect .content ul li span {
-  color: #2a2a2a;
+.featured-items .item .thumb .trending-details .trending-actual-details ul li span {
+  color: #9699c7;
   font-weight: 500;
 }
 
@@ -2123,29 +2129,29 @@ Categories Page
   border-radius: 15px;
 }
 
-.featured-contests .item .hover-effect {
+.featured-contests .item .trending-details {
   position: absolute;
   right: -100%;
   bottom: 15px;
   transition: all .5s;
 }
 
-.featured-contests .item .thumb:hover .hover-effect {
+.featured-contests .item .thumb:hover .trending-details {
   right: 15px;
   bottom: 15px;
 }
 
-.featured-contests .item .hover-effect .content {
+.featured-contests .item .trending-details .content {
   background-color: #fff;
   border-radius: 15px;
   padding: 25px 20px;
 }
 
-.featured-contests .item .hover-effect .content .top-content {
+.featured-contests .item .trending-details .content .top-content {
   margin-bottom: 20px;
 }
 
-.featured-contests .item .hover-effect .content .top-content span.award {
+.featured-contests .item .trending-details .content .top-content span.award {
   font-size: 15px;
   color: #fff;
   background-color: #00bdfe;
@@ -2153,43 +2159,43 @@ Categories Page
   padding: 8px 12px;;
 }
 
-.featured-contests .item .hover-effect .content .top-content span.price {
+.featured-contests .item .trending-details .content .top-content span.price {
   float: right;
   font-size: 20px;
   font-weight: 700;
   color: #00bdfe;
 }
 
-.featured-contests .item .hover-effect .content h4 {
+.featured-contests .item .trending-details .content h4 {
   font-size: 18px;
   font-weight: 700;
   margin-top: 25px;
   margin-bottom: 20px;
 }
 
-.featured-contests .item .hover-effect .content img {
+.featured-contests .item .trending-details .content img {
   border-radius: 15px;
 }
 
-.featured-contests .item .hover-effect .content .info {
+.featured-contests .item .trending-details .content .info {
   display: flex;
   width: 100%;
 }
 
-.featured-contests .item .hover-effect .content span.participants {
+.featured-contests .item .trending-details .content span.participants {
   font-size: 13px;
   font-weight: 500;
   color: #afafaf;
   flex-basis: 50%;
 }
 
-.featured-contests .item .hover-effect .content span.participants img {
+.featured-contests .item .trending-details .content span.participants img {
   border-radius: 0px;
   max-width: 24px;
   margin-bottom: 8px;
 }
 
-.featured-contests .item .hover-effect .content span.submittions {
+.featured-contests .item .trending-details .content span.submittions {
   font-size: 15px;
   font-weight: 500;
   color: #afafaf;
@@ -2198,24 +2204,24 @@ Categories Page
   text-align: right;
 }
 
-.featured-contests .item .hover-effect .content span.submittions img {
+.featured-contests .item .trending-details .content span.submittions img {
   border-radius: 0px;
   max-width: 24px;
   margin-bottom: 8px;
 }
 
-.featured-contests .item .hover-effect .content .border-button {
+.featured-contests .item .trending-details .content .border-button {
   margin-top: 15px;
   margin-bottom: 0px;
 }
 
-.featured-contests .item .hover-effect .content .border-button a {
+.featured-contests .item .trending-details .content .border-button a {
   width: 100%;
   text-align: center;
   padding: 10px 20px;
 }
 
-.featured-contests .item .hover-effect .content span.info {
+.featured-contests .item .trending-details .content span.info {
   font-size: 15px;
   display: inline-block;
   text-align: center;
@@ -2352,12 +2358,12 @@ section.portfolio .thumb {
   margin-bottom: 30px;
 }
 
-section.portfolio .thumb:hover .hover-effect {
+section.portfolio .thumb:hover .trending-details {
   opacity: 1;
   visibility: visible;
 }
 
-section.portfolio .thumb .hover-effect {
+section.portfolio .thumb .trending-details {
   position: absolute;
   left: 0;
   top: 0;
@@ -2369,32 +2375,32 @@ section.portfolio .thumb .hover-effect {
   transition: all .3s;
 }
 
-section.portfolio .thumb .hover-effect .content {
+section.portfolio .thumb .trending-details .content {
   text-align: center;
   padding: 30px;
   display: inline-block;
   width: 100%;
 }
 
-section.portfolio .thumb .hover-effect .content h4 {
+section.portfolio .thumb .trending-details .content h4 {
   font-size: 20px;
   color: #fff;
   font-weight: 700;
   margin-bottom: 10px;
 }
 
-section.portfolio .thumb .hover-effect .content span {
+section.portfolio .thumb .trending-details .content span {
   font-size: 15px;
   color: #fff;
   margin: 10px;
 }
 
-section.portfolio .thumb .hover-effect .content span em {
+section.portfolio .thumb .trending-details .content span em {
   font-style: normal;
   font-weight: 700;
 }
 
-section.portfolio .thumb .hover-effect .content ul {
+section.portfolio .thumb .trending-details .content ul {
   position: absolute;
   bottom: 30px;
   left: 50%;
@@ -2402,12 +2408,12 @@ section.portfolio .thumb .hover-effect .content ul {
   text-align: center;
 }
 
-section.portfolio .thumb .hover-effect .content ul li {
+section.portfolio .thumb .trending-details .content ul li {
   display: inline-block;
   margin: 0px 5px;
 }
 
-section.portfolio .thumb .hover-effect .content ul li a {
+section.portfolio .thumb .trending-details .content ul li a {
   width: 46px;
   height: 46px;
   display: inline-block;
@@ -2420,7 +2426,7 @@ section.portfolio .thumb .hover-effect .content ul li a {
   transition: all .3s;
 }
 
-section.portfolio .thumb .hover-effect .content ul li a:hover {
+section.portfolio .thumb .trending-details .content ul li a:hover {
   background-color: #00bdfe;
   color: #fff;
 }
@@ -2636,7 +2642,7 @@ body {
   .pricing-item {
     margin-bottom: 15px;
   }
-  .featured-contests .item .hover-effect .content .info {
+  .featured-contests .item .trending-details .content .info {
     display: flex !important;
   }
 }
@@ -2650,7 +2656,7 @@ body {
   .closed-contests .owl-nav .owl-prev {
     left: -25px;
   }
-  .featured-contests .item .hover-effect .content .info {
+  .featured-contests .item .trending-details .content .info {
     display: none;
   }
 }
