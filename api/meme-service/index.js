@@ -178,16 +178,60 @@ app.post("/api/memes/trending", async (req, res) => {
 	accessToken = req.headers['authorization']? req.headers['authorization'].split(' ')[1] : null
 	try 
 	{
-		result = await memeModel.find({_id: {$nin: alreadySentMemes}}).limit(numberOfItemsToFetch)
-		numberOfMemesInDB = await memeModel.countDocuments() 	//For paginatino purposes. Update: this is redundant: Fix this
-		
-		res.status(200).json({memes: JSON.stringify(result), message: "Memes fetched successfully", totalNumberOfMemes: numberOfMemesInDB})
+		trendingMemes = require('./logic/trending').getTrending()
+		res.status(200).json({memes: JSON.stringify(result), message: "Memes fetched successfully"})
 	}
 	catch (error) 
 	{
 		res.status(500).json({message: "An unexpected error has occured. Please try again later."})
 	}
 })
+
+
+
+
+
+app.post("/api/memes/search/:title", async (req, res) => {
+	/*
+	the authorization.authenticateAccessToken middleware wouldn't be used for this route because
+	while I want to keep track of who views the various pages by their id/accessToken, this route
+	is also public, and does not require authentication.
+	Hence, just get the access token from the header if it exists
+	*/
+
+	/* 
+	Parameters
+
+	Title
+	Filter options: file type, tags, description, featuring
+	Search logic
+	The filter options will be URL parameters but the title will be a route parameter
+	*/
+	const {title} = req.params
+	const {tags, fileType, description, featuring} = req.query
+	/* 
+	The tags and featuring parameters allow multiple values, and because they are 
+	url parameters, these values (if present) will be separated by a concatenation
+	character +
+	So get the values from the query variables and turn them to an array
+	*/
+
+	tagsArray = tags? tags.split('+') : null
+	featuringArray = featuring? featuring.split('+') : null
+	
+
+	accessToken = req.headers['authorization']? req.headers['authorization'].split(' ')[1] : null
+	try 
+	{
+		memes = search(title, tagsArray, fileType, description, featuringArray)
+		res.status(200).json({memes: JSON.stringify(result), message: "Memes fetched successfully"})
+	}
+	catch (error) 
+	{
+		res.status(500).json({message: "An unexpected error has occured. Please try again later."})
+	}
+})
+
 
 
 

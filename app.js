@@ -23,18 +23,33 @@ res.status(200).sendFile(path.resolve(__dirname, './ui/upload-meme.html'))
 })
 
 
-
 app.get('/sign-in', (req, res) => 
 {
 res.status(200).sendFile(path.resolve(__dirname, './ui/sign-in.html'))
 })
 
 
-
-
 app.get('/memes', (req, res) => 
 {
 res.status(200).sendFile(path.resolve(__dirname, './ui/memes.html'))
+})
+
+
+app.get('/search', (req, res) => 
+{
+res.status(200).sendFile(path.resolve(__dirname, './ui/search.html'))
+})
+
+
+app.get('/categories', (req, res) => 
+{
+res.status(200).sendFile(path.resolve(__dirname, './ui/categories.html'))
+})
+
+
+app.get('/contest-details', (req, res) => 
+{
+res.status(200).sendFile(path.resolve(__dirname, './ui/contest-details.html'))
 })
 
 
