@@ -25,9 +25,7 @@ const meme_schema = mongoose.Schema({
                      },
             explanation: String,
             },
-    tags: {
-           type: String,
-        },                  
+    tags: [{type: String}],                  
     uploader: {
               user_uuid: {
                          type: String, 

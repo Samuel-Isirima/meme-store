@@ -6,7 +6,8 @@ const memeModel = require("./models/meme")
 const tagModel = require("./models/tag")
 const multer = require("multer")
 const cors = require('cors');
-const authorization = require('../auth-service/logic/jwt')
+const authorization = require('../auth-service/logic/jwt');
+const getSearchResults = require("./logic/search");
 /*
 Cors for allowing cross site requests
 */
@@ -99,28 +100,24 @@ app.post("/api/meme/add", uploadMiddleWare.single("meme-file"), async (req, res)
 		Add the tags to the database
 		*/
 		tags = tags.split(`,`)
-		tags.forEach(entry => 
-			{
-				try 
-				{
-				tagModel.create({tag: entry})
-				}
-				catch (error /*Most likely a duplicate key error */) 
-				{
-					console.log('Cannot add tag : ',entry,'. Why? error => ', error)
-					/*
-					A meme tag not being recorded in the database is no cause for alarm
-					Just catch the error, and possibly log it, but no effect on program flow
-					*/
-				}
-			})
-		}
-catch (error) 
-		{
-			res.status(500).json({ message: "An unexpected error ocurred while uploading the meme. Please try again later." })
-		}
+		tags.forEach(entry => {
+			try {
+				tagModel.create({ tag: entry })
+			}
+			catch (error /*Most likely a duplicate key error */) {
+				console.log('Cannot add tag : ', entry, '. Why? error => ', error)
+				/*
+				A meme tag not being recorded in the database is no cause for alarm
+				Just catch the error, and possibly log it, but no effect on program flow
+				*/
+			}
+		})
+	}
+	catch (error) {
+		res.status(500).json({ message: "An unexpected error ocurred while uploading the meme. Please try again later." })
+	}
 
-	})
+})
 
 
 
@@ -146,20 +143,19 @@ app.post("/api/memes", async (req, res) => {
 	Hence, just get the access token from the header if it exists
 	*/
 
-	accessToken = req.headers['authorization']? req.headers['authorization'].split(' ')[1] : null
+	accessToken = req.headers['authorization'] ? req.headers['authorization'].split(' ')[1] : null
 	data = req.body
 	alreadySentMemes = data.alreadyFetchedMemes
 	numberOfItemsToFetch = data.numberOfItemsToFetch
 	console.log('Already sent memes', alreadySentMemes)
 	try {
-		result = await memeModel.find({_id: {$nin: alreadySentMemes}}).limit(numberOfItemsToFetch)
-		numberOfMemesInDB = await memeModel.countDocuments() 	//For paginatino purposes. Update: this is redundant: Fix this
-		
-		res.status(200).json({memes: JSON.stringify(result), message: "Memes fetched successfully", totalNumberOfMemes: numberOfMemesInDB})
+		result = await memeModel.find({ _id: { $nin: alreadySentMemes } }).limit(numberOfItemsToFetch)
+		numberOfMemesInDB = await memeModel.countDocuments() 	//For pagination purposes. Update: this is redundant: Fix this
+
+		res.status(200).json({ memes: JSON.stringify(result), message: "Memes fetched successfully", totalNumberOfMemes: numberOfMemesInDB })
 	}
-	catch (error) 
-	{
-		res.status(500).json({message: "An unexpected error has occured. Please try again later."})
+	catch (error) {
+		res.status(500).json({ message: "An unexpected error has occured. Please try again later." })
 	}
 })
 
@@ -175,15 +171,13 @@ app.post("/api/memes/trending", async (req, res) => {
 	Hence, just get the access token from the header if it exists
 	*/
 
-	accessToken = req.headers['authorization']? req.headers['authorization'].split(' ')[1] : null
-	try 
-	{
+	accessToken = req.headers['authorization'] ? req.headers['authorization'].split(' ')[1] : null
+	try {
 		trendingMemes = require('./logic/trending').getTrending()
-		res.status(200).json({memes: JSON.stringify(result), message: "Memes fetched successfully"})
+		res.status(200).json({ memes: JSON.stringify(result), message: "Memes fetched successfully" })
 	}
-	catch (error) 
-	{
-		res.status(500).json({message: "An unexpected error has occured. Please try again later."})
+	catch (error) {
+		res.status(500).json({ message: "An unexpected error has occured. Please try again later." })
 	}
 })
 
@@ -191,7 +185,7 @@ app.post("/api/memes/trending", async (req, res) => {
 
 
 
-app.post("/api/memes/search/:title", async (req, res) => {
+app.post("/api/memes/search", async (req, res) => {
 	/*
 	the authorization.authenticateAccessToken middleware wouldn't be used for this route because
 	while I want to keep track of who views the various pages by their id/accessToken, this route
@@ -207,8 +201,8 @@ app.post("/api/memes/search/:title", async (req, res) => {
 	Search logic
 	The filter options will be URL parameters but the title will be a route parameter
 	*/
-	const {title} = req.params
-	const {tags, fileType, description, featuring} = req.query
+	//const { title, tags, fileType } = req.query
+	const { title, tags, fileTypes, sentIDs, numberOfItemsToFetch } = req.body
 	/* 
 	The tags and featuring parameters allow multiple values, and because they are 
 	url parameters, these values (if present) will be separated by a concatenation
@@ -216,19 +210,22 @@ app.post("/api/memes/search/:title", async (req, res) => {
 	So get the values from the query variables and turn them to an array
 	*/
 
-	tagsArray = tags? tags.split('+') : null
-	featuringArray = featuring? featuring.split('+') : null
+	tagsArray = tags ? tags.split(',') : null
+	fileTypeArray = fileTypes ? fileTypes.split(',') : null
+	// console.log(`title ${title} tags: ${tags} filetype: ${fileTypes} sentIDs: ${sentIDs} number of Items to fetch: ${numberOfItemsToFetch}`)
 	
-
-	accessToken = req.headers['authorization']? req.headers['authorization'].split(' ')[1] : null
+	
+	accessToken = req.headers['authorization'] ? req.headers['authorization'].split(' ')[1] : null
 	try 
 	{
-		memes = search(title, tagsArray, fileType, description, featuringArray)
-		res.status(200).json({memes: JSON.stringify(result), message: "Memes fetched successfully"})
+		const { memesCount, memes } = await getSearchResults(title, tagsArray, fileTypeArray, sentIDs, numberOfItemsToFetch)
+		console.log(`Result: ${memes}, memesCount: ${memesCount}`)
+		res.status(200).json({ memes: JSON.stringify(memes), memesCount: memesCount, message: "Memes fetched successfully" })
 	}
 	catch (error) 
 	{
-		res.status(500).json({message: "An unexpected error has occured. Please try again later."})
+		console.log(error)
+		res.status(500).json({ message: "An unexpected error has occured. Please try again later." })
 	}
 })
 

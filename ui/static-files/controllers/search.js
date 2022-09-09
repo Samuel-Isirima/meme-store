@@ -13,6 +13,11 @@ tagSearchSuggestion = `.tss013`
 resultContainer = `.rco0`
 searchButton = `.sb`
 filterMediaType = `.fmt`
+filterButton = `.fbtn`
+
+searchProcessing = false
+var timeout
+
 
 $(searchButton).prop('disabled', true)
 $(addTagButton).prop('disabled', true)
@@ -92,7 +97,7 @@ function addTag(tag) {
 
     if (tags.length == 10) {
         $(tag_search_suggestion_container)
-        .append('<p style="color: red; text-align: center;" class="tqty-err">You can only add 10 tags</p>')
+        .append('<p style="color: red text-align: center" class="tqty-err">You can only add 10 tags</p>')
         
         setTimeout(function () 
         {
@@ -180,32 +185,65 @@ function renderTagSuggestions(tags)
 
 $(document).on('change', filterMediaType, (event) =>
 {
-
-    if ($(this).is(':checked')) 
+element = event.target
+console.log($(element).attr('mt'))
+    if ($(element).is(':checked')) 
     {
-        if(mediaTypes.contains($(this).attr('mt')))
+        if(filterMediaTypes.includes($(element).attr('mt')))
             //Don't do shit
             return
         else
             {
-            mediaTypes.push($(this).attr('mt'))
+                filterMediaTypes.push($(element).attr('mt'))
             }
     }
     else
     {
-        index = mediaTypes.indexOf($(this).attr('mt').trim())
-        mediaTypes.splice(index, 1)
+        index = filterMediaTypes.indexOf($(element).attr('mt').trim())
+        filterMediaTypes.splice(index, 1)
     }
     
 })
 
 
-
-$(document).on('click', searchButton, (event) => {
-    search()
+$(document).on('click', filterButton, (event) => {
+    search(1, {}, true)
 })
 
-const search = () => {
+
+
+$(document).on('click', searchButton, (event) => 
+{
+//search(1, {}, false)
+/*
+Always reload the page on a fresh search request
+Set the url path and parameters, then send the page to the location
+Hence, to actually carry out the search, a method will have to run on page load
+that reads the url, and sends the request 
+*/
+window.location = `search?title=${title}&tags=${tags.toString('+')}&fileTypes=${filterMediaTypes.toString('+')}`  
+})
+
+
+const search = async (pageIndex, dataSet) => {
+/*
+Flatten out the dataset holding the ids
+
+It is in this format
+{
+    1: [2,4,5,6],
+    2: [1,4,6,7],
+    ...
+}
+but needs to be in one array like so
+
+[1,2,4,5,6,7]
+*/
+var flatDataSet = []
+Object.keys(dataSet).forEach((key) => 
+{
+flatDataSet = flatDataSet.concat(dataSet[key])
+})
     /*
     Avoid multiple requests
     Do this by creating a processing lock
@@ -222,11 +260,30 @@ const fetchOptions = {
                     "Content-Type": "application/json",
                     "Authorization": getCookie("authAccessToken")
                  },
-        body: {}
+        body:  JSON.stringify({
+                title: getAllUrlParams().title,
+                tags: getAllUrlParams().tags,
+                fileTypes: getAllUrlParams().filetypes,
+                sentIDs: flatDataSet,
+                numberOfItemsToFetch: 30 
+              })
         }
+
+response = await fetch("http://localhost:7073/api/memes/search", fetchOptions)
+data = await response.json()
+
+removeLoader(searchResultsContainer)
+if(response.status != 200)
+{
+    $(searchResultsContainer).append(`<p style="color: red">${data.message}</p>`)
+}
+
+totalNumberOfResults = data.totalNumberOfResults
+renderSearchResults(JSON.parse(data.memes))
 }
 
 
+search(1,[])
 
 function process_response(response) {
     try {
@@ -234,7 +291,7 @@ function process_response(response) {
     }
     catch (error) {
         $(result_container).empty()
-        $(result_container).append(`<p style="color:red;">An unexpected error has occured. Please try again later.</p>`)
+        $(result_container).append(`<p style="color:red">An unexpected error has occured. Please try again later.</p>`)
         $(searchButton).prop('disabled', false)
         create_meme_processing = false
 
@@ -243,7 +300,7 @@ function process_response(response) {
 
     if (response.status != 200) {
         $(result_container).empty()
-        $(result_container).append(`<p style="color:red;">${responseJSON.message}</p>`)
+        $(result_container).append(`<p style="color:red">${responseJSON.message}</p>`)
         $(searchButton).prop('disabled', false)
         create_meme_processing = false
 
@@ -252,17 +309,17 @@ function process_response(response) {
 
     //If the code gets to this point, it means the request was successful
     $(result_container).empty()
-    $(result_container).append(`<p style="color:green;">${responseJSON.message}</p>`)
+    $(result_container).append(`<p style="color:green">${responseJSON.message}</p>`)
     //Now redirect to the newly created meme's page
     setTimeout(() => {
         window.location = `./meme/${responseJSON.data.link}/${responseJSON.data.uuid}`
-    }, 1500);
+    }, 1500)
 
 
 }
 
 
-const validateText = (text) =>
+function validateText (text)
 {
     if(text == '' || text == undefined || text == null || text == ' ')
 	{return false}
@@ -270,16 +327,81 @@ const validateText = (text) =>
 	{return true}
 }
 
-let timeout;
 
 function runAfterEvent_noDuplicateRequests(callback, wait) 
 {
     /*
     This function helps to regulate backend requests sent for suggestion. A regular setTimeout call will 
     do multiple calls at once if the criteria are met. This guy would only send one request after user input
-    */
-      clearTimeout(timeout);
-      timeout = setTimeout(function () { callback.apply(this) }, wait);
+        */
+
+      clearTimeout(timeout)
+      timeout = setTimeout(function () { callback.apply(this) }, wait)
 }
 
+
+function getAllUrlParams(url) {
+
+    // get query string from url (optional) or window
+    var queryString = url ? url.split('?')[1] : window.location.search.slice(1)
+  
+    // we'll store the parameters here
+    var obj = {}
+  
+    // if query string exists
+    if (queryString) {
+  
+      // stuff after # is not part of query string, so get rid of it
+      queryString = queryString.split('#')[0]
+  
+      // split our query string into its component parts
+      var arr = queryString.split('&')
+  
+      for (var i = 0; i < arr.length; i++) {
+        // separate the keys and the values
+        var a = arr[i].split('=')
+  
+        // set parameter name and value (use 'true' if empty)
+        var paramName = a[0]
+        var paramValue = typeof (a[1]) === 'undefined' ? true : a[1]
+  
+        // (optional) keep case consistent
+        paramName = paramName.toLowerCase()
+        if (typeof paramValue === 'string') paramValue = paramValue.toLowerCase()
+  
+        // if the paramName ends with square brackets, e.g. colors[] or colors[2]
+        if (paramName.match(/\[(\d+)?\]$/)) {
+  
+          // create key if it doesn't exist
+          var key = paramName.replace(/\[(\d+)?\]/, '')
+          if (!obj[key]) obj[key] = []
+  
+          // if it's an indexed array e.g. colors[2]
+          if (paramName.match(/\[\d+\]$/)) {
+            // get the index value and add the entry at the appropriate position
+            var index = /\[(\d+)\]/.exec(paramName)[1]
+            obj[key][index] = paramValue
+          } else {
+            // otherwise add the value to the end of the array
+            obj[key].push(paramValue)
+          }
+        } else {
+          // we're dealing with a string
+          if (!obj[paramName]) {
+            // if it doesn't exist, create property
+            obj[paramName] = paramValue
+          } else if (obj[paramName] && typeof obj[paramName] === 'string'){
+            // if property does exist and it's a string, convert it to an array
+            obj[paramName] = [obj[paramName]]
+            obj[paramName].push(paramValue)
+          } else {
+            // otherwise add the property
+            obj[paramName].push(paramValue)
+          }
+        }
+      }
+    }
+  
+    return obj
+  }
 

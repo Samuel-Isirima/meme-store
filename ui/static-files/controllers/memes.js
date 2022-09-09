@@ -63,6 +63,7 @@ const renderMeme = (meme) =>
 
 const renderMemes = (memes, pageNumber) =>
 {
+console.log('Render memes called')
 thisPageMemes = []
 memesUI = ''
 
@@ -71,6 +72,14 @@ Object.keys(memes).forEach((key) =>
     thisPageMemes.push(memes[key]._id)
     memesUI += renderMeme(memes[key])
     })
+
+if(thisPageMemes.length < 1 && pageNumber == 1)
+    {
+    $(textResultContainer).empty()
+    $(textResultContainer).append(`<p>There are currently no memes to show</p>`)
+    return
+    }
+
 thisPageViewPort = viewPortUI(memesUI)
 
 memesIDsHolder[currentPageIndex] = null
@@ -108,14 +117,15 @@ $(`${pageButton}-${currentPageIndex}`).prop('disabled', true)
 fetchOptions = {
                 method: "POST",
                 headers: {
-                         "Content-Type": "application/json",
-                         "authorization": getCookie("authAccessToken")
-                         },
+                    "Content-Type": "application/json",
+                    "authorization": getCookie("authAccessToken")
+                },
                 body: JSON.stringify({numberOfItemsToFetch: allowedNumberOfMemesPerPage, alreadyFetchedMemes: flatDataSet})
-               }
-response = await fetch("http://localhost:7073/api/memes", fetchOptions)
-data = await response.json()
-
+            }
+            response = await fetch("http://localhost:7073/api/memes", fetchOptions)
+            data = await response.json()
+            console.log('fetchmemes')
+            
 removeLoader(textResultContainer)
 fetchingMemes = false
 if(response.status != 200)
