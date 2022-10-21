@@ -14,7 +14,6 @@ const numberOfTrendingMemes = 15
 
 
 
-
 const renderViewPort = (pageIndex) =>
 {
     var viewPortIndex = viewPorts.findIndex(viewPortEntry => 
@@ -252,19 +251,15 @@ initMediaPlayer(thisMeme)
 
 const initMediaPlayer = (memeSelector) =>
 {
-const Plyr = new Plyr(memeSelector, 
+const plyrr = new Plyr(memeSelector, 
     {
         autoplay: true,
         volume: 1,
         disableContextMenu: true,
         resetOnEn: true,
         duration: 10,
-        previewThumbnails: { 
-            enabled: false, 
-            src: '' 
-        }
     })
-Plyr.play()
+plyrr.play()
 }
 
 

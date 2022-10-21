@@ -1,0 +1,1 @@
+db.memes.insertOne({title: "First audio",description: "I can hear you",file_type: "AUDIO",tags: ["Sabinus","Karen"],uploader: { user_uuid: "828aoish93slaisd9rfh8e8sh" },mime: "mp3",url: "first-audio.mp3",date_uploaded: 1660834999999})

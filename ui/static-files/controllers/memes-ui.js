@@ -32,17 +32,14 @@ return ` <div class="col-6 col-lg-3">
 
 const videoMemeUI = (memeObject) =>
 {
+    console.log('Meme object',memeObject)
     return ` <div class="col-6 col-lg-3">
-                <div class="popular-item" uier=meme-${memeObject._id} style="text-align: center;">
-                    <div class="thumb" uier=meme-${memeObject._id}>
-                    <video class="MS-video-${memeObject._id}" playsinline uier=meme-${memeObject._id} controls data-poster="assets/images/guitar.jpeg">
-                    <source src="${memeObject.url}" type="${memeObject.mime}" />
+               
+                    <video class="video-js MS-video-${memeObject._id}" preload="auto" controls
+                    data-setup="{}"  uier=meme-${memeObject._id}>
+                    <source src="${memeObject.url}#t=0.1" type="video/${memeObject.mime}" />
                     </video>
-                    <span class="category">${memeObject.title}</span>
-                    <span class="likes"><i class="fa fa-heart"></i> 256</span>
-                    <span class="see-details"><a href="meme/${memeObject.title.replace(" ","-")}/${memeObject.id}">Details</a></span>  
-                </div>
-                </div>
+                   
             </div>`    
         
 }
