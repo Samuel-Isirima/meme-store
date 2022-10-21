@@ -4,7 +4,7 @@ var viewPorts = []
 currentPageIndex = 1
 const pageButton = `.pn-sb0`
 const pageButtonsContainer = `.page-buttons-container`
-const allowedNumberOfMemesPerPage = 1
+const allowedNumberOfMemesPerPage = 4
 const paginationContainer = `.pcon0`
 const videoMemeElement = `.vidMeme`
 const viewPortContainer = `.vpC0`
@@ -249,19 +249,6 @@ initMediaPlayer(thisMeme)
 
 //Initialize media player for video and audio preview
 
-const initMediaPlayer = (memeSelector) =>
-{
-const plyrr = new Plyr(memeSelector, 
-    {
-        autoplay: true,
-        volume: 1,
-        disableContextMenu: true,
-        resetOnEn: true,
-        duration: 10,
-    })
-plyrr.play()
-}
-
 
 
 
@@ -280,64 +267,60 @@ If there are less than 5 and current page is page 1, show 1 for current page and
 If there are more than 5 and the current page is 1, show 1 for the current page and [4] for the next pages
 If there are more than 5 and the current page is 4, show 3 for previous pages, 1 for current page and 1 for next page 
 */
-numberOfPages = numberOfItems/allowedNumberOfMemesPerPage
+numberOfPages = parseInt(numberOfItems/allowedNumberOfMemesPerPage)
 addOne = numberOfItems%allowedNumberOfMemesPerPage == 0? 0 : 1  //Get and account for possbile remainder
 numberOfPages += addOne
 
 pageButtons = []
 anyNextPage = numberOfPages > pageIndex
 numberOfNextPages = numberOfPages - pageIndex
-console.log('NN ',numberOfPages)
 anyPreviousPage = pageIndex > 1
 var numberOfPreviousPages = 0
 
 numberOfPageButtonsAllowed = 5
 
+numberOfPreviousPages = currentPageIndex - 1;
+numberOfNextPages = numberOfPages - currentPageIndex;
 
-if(pageIndex < numberOfPageButtonsAllowed)
-{
-    if(numberOfPages > 4)
-        numberOfNextPages = numberOfPageButtonsAllowed - pageIndex
-    else
-        numberOfNextPages = numberOfPages - numberOfPageButtonsAllowed
-
-    numberOfPreviousPages = numberOfPageButtonsAllowed - numberOfNextPages - 1
-
-     //Generate previous pages buttons
-     for(i = 1; i <= pageIndex-1; i++)
-         pageButtons.push(pageButtonUI(i, false))
+//Generate all page buttons
+    for(i = 1; i <= numberOfPages + 1; i++)
+        //pageButtons.push(pageButtonUI(i, false))
      
-     //Generate the current page button
-     pageButtons.push(pageButtonUI(pageIndex, true))
- 
-     //Generate next pages buttons
-     for(i = 1; i < numberOfNextPages+1; i++)
-         pageButtons.push(pageButtonUI( parseInt(pageIndex) + parseInt(i), false))
-     
-}
-else
-{
-    if(numberOfNextPages > 1)
-        numberOfNextPages = 1
-    
-    numberOfPreviousPages = numberOfPageButtonsAllowed - numberOfNextPages - 1
-    
-    //Generate previous pages buttons
-    for(i = pageIndex-1, a = numberOfPreviousPages; a > 0; i--, a--)
+//Filter out the unneeded buttons
+    if(pageIndex <= 4)
     {
-        pageButtons.push(pageButtonUI(i, false))
-        pageButtons.reverse()
+        //Number of next pages buttons to show 
+        numberOfNextPageButtonsToShow = numberOfPageButtonsAllowed - pageIndex;
+        if(numberOfPages <= 4 && pageIndex == 4)
+            {
+                numberOfNextPageButtonsToShow = 0;
+            }
+        if(numberOfPages <= 4)
+            {
+                numberOfNextPageButtonsToShow = numberOfPages - pageIndex;
+            }
+        numberOfPreviousPageButtonsToShow = pageIndex - 1;
     }
+    else
+    {
+        numberOfNextPageButtonsToShow = 1;
+        numberOfPreviousPageButtonsToShow = 3;
+    }
+
+
+    console.log(`PI ${pageIndex}, NP ${numberOfPages}, NNPTS ${numberOfNextPageButtonsToShow}, NPPTS ${numberOfPreviousPageButtonsToShow}`)
+
+    for(i = 1; i < numberOfPreviousPageButtonsToShow; i++)
+    {
+        pageButtons.push(pageButtonUI( parseInt(pageIndex) - parseInt(i), false))
+    }
+
+    pageButtons.push(pageButtonUI( parseInt(pageIndex), false))
     
-    //Generate the current page button
-    pageButtons.push(pageButtonUI(pageIndex, true))
-
-    //Generate next pages buttons
-    for(i = 1; i <= numberOfNextPages; i++)
+    for(i = 1; i < numberOfNextPageButtonsToShow; i++)
+    {
         pageButtons.push(pageButtonUI( parseInt(pageIndex) + parseInt(i), false))
-
-}
-
+    }
 
 $(paginationContainer).empty()
 $(paginationContainer).prepend(leftShiftPageButtonUI(--pageIndex))  //Add left/less button
