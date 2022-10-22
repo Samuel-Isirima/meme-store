@@ -4,7 +4,7 @@ var viewPorts = []
 currentPageIndex = 1
 const pageButton = `.pn-sb0`
 const pageButtonsContainer = `.page-buttons-container`
-const allowedNumberOfMemesPerPage = 4
+const allowedNumberOfMemesPerPage = 1
 const paginationContainer = `.pcon0`
 const videoMemeElement = `.vidMeme`
 const viewPortContainer = `.vpC0`
@@ -282,10 +282,6 @@ numberOfPageButtonsAllowed = 5
 numberOfPreviousPages = currentPageIndex - 1;
 numberOfNextPages = numberOfPages - currentPageIndex;
 
-//Generate all page buttons
-    for(i = 1; i <= numberOfPages + 1; i++)
-        //pageButtons.push(pageButtonUI(i, false))
-     
 //Filter out the unneeded buttons
     if(pageIndex <= 4)
     {
@@ -303,21 +299,27 @@ numberOfNextPages = numberOfPages - currentPageIndex;
     }
     else
     {
-        numberOfNextPageButtonsToShow = 1;
-        numberOfPreviousPageButtonsToShow = 3;
+        numberOfNextPageButtonsToShow = 0;
+
+        if(numberOfPages > currentPageIndex)
+        {
+            numberOfNextPageButtonsToShow = 1;
+        }
+
+        numberOfPreviousPageButtonsToShow = 4-numberOfNextPageButtonsToShow;
     }
 
 
     console.log(`PI ${pageIndex}, NP ${numberOfPages}, NNPTS ${numberOfNextPageButtonsToShow}, NPPTS ${numberOfPreviousPageButtonsToShow}`)
 
-    for(i = 1; i < numberOfPreviousPageButtonsToShow; i++)
+    for(i = 1; i <= numberOfPreviousPageButtonsToShow; i++)
     {
         pageButtons.push(pageButtonUI( parseInt(pageIndex) - parseInt(i), false))
     }
-
-    pageButtons.push(pageButtonUI( parseInt(pageIndex), false))
+    pageButtons.reverse()
+    pageButtons.push(pageButtonUI( parseInt(pageIndex), true))
     
-    for(i = 1; i < numberOfNextPageButtonsToShow; i++)
+    for(i = 1; i <= numberOfNextPageButtonsToShow; i++)
     {
         pageButtons.push(pageButtonUI( parseInt(pageIndex) + parseInt(i), false))
     }
@@ -327,7 +329,7 @@ $(paginationContainer).prepend(leftShiftPageButtonUI(--pageIndex))  //Add left/l
 $(paginationContainer).append(pageButtons)
 $(paginationContainer).append(rightShiftPageButtonUI(++pageIndex+1))  //Add right/greater button
 
-if(numberOfPreviousPages > 0) //Enable left/less button
+if(numberOfPreviousPageButtonsToShow > 0) //Enable left/less button
     $(`.left-shift`).prop(`disabled`, false)
 
 if(pageIndex < numberOfPages) //Enable right/greater button
