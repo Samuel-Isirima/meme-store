@@ -1,5 +1,6 @@
 const memeModel = require('../models/meme')
 
+
 const getSearchResults = async (title, tagsArray, fileTypeArray, sentIDsArray, numberOfItemsToFetch) => {
     var memes = null
     //If all the parameters are provided
@@ -8,7 +9,7 @@ const getSearchResults = async (title, tagsArray, fileTypeArray, sentIDsArray, n
         fileTypeFilter = ''
         tagsFilter = ''
 
-        if (!tagsArray) 
+        if (!tagsArray || tagsArray.length < 1) 
         {
             tagsFilter = {}
         }
@@ -32,11 +33,10 @@ const getSearchResults = async (title, tagsArray, fileTypeArray, sentIDsArray, n
             }
             else 
             {
-                fileTypeFilter = { fileType: {$in: fileTypeArray }}
+            fileTypeFilter = { file_type: {$in: fileTypeArray }}
             }
         
         }
-
 
         memes = await memeModel.find({
             $and: [
@@ -51,23 +51,25 @@ const getSearchResults = async (title, tagsArray, fileTypeArray, sentIDsArray, n
  
         memesCount = await memeModel.find({
             $and: [
-                {title: {$regex: titleRegex, $options: "i"}}, 
+                { title: { $regex: titleRegex, $options: "i" } },
                 tagsFilter,
                 fileTypeFilter,
-                {_id : {$nin : sentIDsArray}}
+                { _id: { $nin: sentIDsArray } }
+                ],
+            }).count()
 
-            ]
-                }).count()
-        
         return { memesCount, memes }
 
 
     }
-    catch (error) {
+    catch (error) 
+    {
         console.log(error)
         throw Error("An unexpected error has occured. Please try again later.")
     }
 
 }
+
+
 
 module.exports = getSearchResults

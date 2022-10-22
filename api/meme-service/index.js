@@ -202,7 +202,13 @@ app.post("/api/memes/search", async (req, res) => {
 	The filter options will be URL parameters but the title will be a route parameter
 	*/
 	//const { title, tags, fileType } = req.query
-	const { title, tags, fileTypes, sentIDs, numberOfItemsToFetch } = req.body
+//	const { title, tags, fileTypes, sentIDs, numberOfItemsToFetch } = req.body
+	data = req.body
+	title = data.title? data.title : ''
+	tags = data.tags? data.tags : ''
+	fileTypes = data.fileTypes? data.tags : ''
+	sentIDs = data.sentIDs? data.sentIDs : ''
+	numberOfItemsToFetch = data.numberOfItemsToFetch
 	/* 
 	The tags and featuring parameters allow multiple values, and because they are 
 	url parameters, these values (if present) will be separated by a concatenation
@@ -212,21 +218,21 @@ app.post("/api/memes/search", async (req, res) => {
 
 	tagsArray = tags ? tags.split(',') : null
 	fileTypeArray = fileTypes ? fileTypes.split(',') : null
-	// console.log(`title ${title} tags: ${tags} filetype: ${fileTypes} sentIDs: ${sentIDs} number of Items to fetch: ${numberOfItemsToFetch}`)
-	
-	
+	console.log(`title ${title} tags: ${tags} filetype: ${fileTypes} sentIDs: ${sentIDs} number of Items to fetch: ${numberOfItemsToFetch}`)
+
+
 	accessToken = req.headers['authorization'] ? req.headers['authorization'].split(' ')[1] : null
-	try 
-	{
+	try {
 		const { memesCount, memes } = await getSearchResults(title, tagsArray, fileTypeArray, sentIDs, numberOfItemsToFetch)
 		console.log(`Result: ${memes}, memesCount: ${memesCount}`)
 		res.status(200).json({ memes: JSON.stringify(memes), memesCount: memesCount, message: "Memes fetched successfully" })
 	}
-	catch (error) 
-	{
+	catch (error) {
 		console.log(error)
 		res.status(500).json({ message: "An unexpected error has occured. Please try again later." })
 	}
+
+
 })
 
 
