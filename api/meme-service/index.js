@@ -1,17 +1,17 @@
 const express = require("express")
-const app = express();
+const app = express()
 const PORT = process.env.PORT_ONE || 7073
 const mongoose = require("mongoose")
 const memeModel = require("./models/meme")
 const tagModel = require("./models/tag")
 const multer = require("multer")
-const cors = require('cors');
-const authorization = require('../auth-service/logic/jwt');
-const getSearchResults = require("./logic/search");
+const cors = require('cors')
+const authorization = require('../auth-service/logic/jwt')
+const getSearchResults = require("./logic/search")
 /*
 Cors for allowing cross site requests
 */
-app.use(cors({ origin: '*' }));
+app.use(cors({ origin: '*' }))
 
 app.use(express.json())
 
@@ -65,6 +65,7 @@ uploadMiddleWare = multer({
 audioFileExtensions = ["mp3", "wma", "flv", "wav"]
 videoFileExtensions = ["mp4", "wmv", "3gp", "m4a"]
 imageFileExtensions = ["jpg", "gif", "jpeg", "png", "tiff"]
+
 
 app.post("/api/meme/add", uploadMiddleWare.single("meme-file"), async (req, res) => {
 	/*
@@ -200,9 +201,10 @@ app.post("/api/memes/search", async (req, res) => {
 	Filter options: file type, tags, description, featuring
 	Search logic
 	The filter options will be URL parameters but the title will be a route parameter
+
 	*/
 	//const { title, tags, fileType } = req.query
-//	const { title, tags, fileTypes, sentIDs, numberOfItemsToFetch } = req.body
+	//const { title, tags, fileTypes, sentIDs, numberOfItemsToFetch } = req.body
 	data = req.body
 	title = data.title? data.title : ''
 	tags = data.tags? data.tags : ''
@@ -216,10 +218,8 @@ app.post("/api/memes/search", async (req, res) => {
 	So get the values from the query variables and turn them to an array
 	*/
 
-	tagsArray = tags ? tags.split(',') : null
-	fileTypeArray = fileTypes ? fileTypes.split(',') : null
-	console.log(`title ${title} tags: ${tags} filetype: ${fileTypes} sentIDs: ${sentIDs} number of Items to fetch: ${numberOfItemsToFetch}`)
-
+	tagsArray = tags ? tags.split(',') : []
+	fileTypeArray = fileTypes ? fileTypes.split(',') : []
 
 	accessToken = req.headers['authorization'] ? req.headers['authorization'].split(' ')[1] : null
 	try {
@@ -234,7 +234,6 @@ app.post("/api/memes/search", async (req, res) => {
 
 
 })
-
 
 
 
