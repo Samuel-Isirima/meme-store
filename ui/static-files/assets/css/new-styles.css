@@ -1,0 +1,18 @@
+.box-shadow {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 3px 10px 0 rgba(0, 0, 0, 0.1);
+  }
+
+  .box-shadow:hover {
+    box-shadow: 0px 0px 5px 5px rgba(0, 0, 0, 0.2), 0 0px 14px 0 rgba(0, 0, 0, 0.16);
+
+  }
+
+  .center-align
+  {
+    text-align: center !important;
+  }
+
+  .white-text
+  {
+      color: white;
+  }

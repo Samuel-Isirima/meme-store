@@ -34,7 +34,7 @@ res.status(200).sendFile(path.resolve(__dirname, './ui/contests.html'))
 
 app.get('/upload', (req, res) => 
 {
-res.status(200).sendFile(path.resolve(__dirname, './ui/upload-meme.html'))
+res.status(200).sendFile(path.resolve(__dirname, './ui/upload.html'))
 })
 
 
