@@ -11,6 +11,21 @@ app.get('/home', (req, res) =>
 res.status(200).sendFile(path.resolve(__dirname, './ui/index.html'))
 })
 
+app.get('/head', (req, res) => 
+{
+res.status(200).sendFile(path.resolve(__dirname, './ui/head.html'))
+})
+
+app.get('/top-navbar', (req, res) => 
+{
+res.status(200).sendFile(path.resolve(__dirname, './ui/top-navbar.html'))
+})
+
+app.get('/side-navbar', (req, res) => 
+{
+res.status(200).sendFile(path.resolve(__dirname, './ui/side-navbar.html'))
+})
+
 app.get('/contests', (req, res) => 
 {
 res.status(200).sendFile(path.resolve(__dirname, './ui/contests.html'))

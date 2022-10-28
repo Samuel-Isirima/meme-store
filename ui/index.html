@@ -1,126 +1,100 @@
-<!DOCTYPE html><html lang="en"><head>
-<title>Sidebar 02</title>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link rel="stylesheet" href="assets/css/font-awesome.min.css">
-<link rel="stylesheet" href="assets/css/style.css">
-<link rel="stylesheet" href="assets/css/fonts-css.css">
-
-<meta name="robots" content="noindex, follow">
-<script defer referrerpolicy="origin" src="assets/js/s.js"></script><script nonce="bcfb9ec9-0754-4bd7-af02-88c8beeeee4b">(function(w,d){!function(Z,_,ba,bb){Z.zarazData=Z.zarazData||{};Z.zarazData.executed=[];Z.zaraz={deferred:[],listeners:[]};Z.zaraz.q=[];Z.zaraz._f=function(bc){return function(){var bd=Array.prototype.slice.call(arguments);Z.zaraz.q.push({m:bc,a:bd})}};for(const be of["track","set","debug"])Z.zaraz[be]=Z.zaraz._f(be);Z.zaraz.init=()=>{var bf=_.getElementsByTagName(bb)[0],bg=_.createElement(bb),bh=_.getElementsByTagName("title")[0];bh&&(Z.zarazData.t=_.getElementsByTagName("title")[0].text);Z.zarazData.x=Math.random();Z.zarazData.w=Z.screen.width;Z.zarazData.h=Z.screen.height;Z.zarazData.j=Z.innerHeight;Z.zarazData.e=Z.innerWidth;Z.zarazData.l=Z.location.href;Z.zarazData.r=_.referrer;Z.zarazData.k=Z.screen.colorDepth;Z.zarazData.n=_.characterSet;Z.zarazData.o=(new Date).getTimezoneOffset();Z.zarazData.q=[];for(;Z.zaraz.q.length;){const bl=Z.zaraz.q.shift();Z.zarazData.q.push(bl)}bg.defer=!0;for(const bm of[localStorage,sessionStorage])Object.keys(bm||{}).filter((bo=>bo.startsWith("_zaraz_"))).forEach((bn=>{try{Z.zarazData["z_"+bn.slice(7)]=JSON.parse(bm.getItem(bn))}catch{Z.zarazData["z_"+bn.slice(7)]=bm.getItem(bn)}}));bg.referrerPolicy="origin";bg.src="/cdn-cgi/zaraz/s.js?z="+btoa(encodeURIComponent(JSON.stringify(Z.zarazData)));bf.parentNode.insertBefore(bg,bf)};["complete","interactive"].includes(_.readyState)?zaraz.init():Z.addEventListener("DOMContentLoaded",zaraz.init)}(w,d,0,"script");})(window,document);</script></head>
+<!DOCTYPE html>
+<html lang="en">
+<head w3-include-html="head">
+</head>
 <body>
-  <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light">
-    <div class="container-fluid">
-        <a href="#" class="navbar-brand">Brand</a>
-        <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
-            <div class="navbar-nav">
-                <a href="#" class="nav-item nav-link active">Home</a>
-                <a href="#" class="nav-item nav-link">Profile</a>
-                <div class="nav-item dropdown">
-                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Messages</a>
-                    <div class="dropdown-menu">
-                        <a href="#" class="dropdown-item">Inbox</a>
-                        <a href="#" class="dropdown-item">Sent</a>
-                        <a href="#" class="dropdown-item">Drafts</a>
-                    </div>
-                </div>
-            </div>
-            <form class="d-flex">
-                <div class="input-group">                    
-                    <input type="text" class="form-control" placeholder="Search">
-                    <button type="button" class="btn btn-secondary"><i class="bi-search"></i></button>
-                </div>
-            </form>
-            <div class="navbar-nav">
-                <a href="#" class="nav-item nav-link">Login</a>
-            </div>
-        </div>
-    </div>
+<nav w3-include-html="top-navbar">
 </nav>
 <div class="wrapper d-flex align-items-stretch">
-<nav id="sidebar" style="background-color: green; position: fixed;">
-<div class="custom-menu">
-<button type="button" id="sidebarCollapse" class="btn btn-primary">
-<i class="fa fa-bars"></i>
-<span class="sr-only">Toggle Menu</span>
-</button>
-</div>
-<div class="p-4 pt-5">
-<h1><a href="index.html" class="logo">Splash</a></h1>
-<ul class="list-unstyled components mb-5">
-<li class="active">
-<a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Home</a>
-<ul class="collapse list-unstyled" id="homeSubmenu">
-<li>
-<a href="#">Home 1</a>
-</li>
-<li>
-<a href="#">Home 2</a>
-</li>
-<li>
-<a href="#">Home 3</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#">About</a>
-</li>
-<li>
-<a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Pages</a>
-<ul class="collapse list-unstyled" id="pageSubmenu">
-<li>
-<a href="#">Page 1</a>
-</li>
-<li>
-<a href="#">Page 2</a>
-</li>
-<li>
-<a href="#">Page 3</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#">Portfolio</a>
-</li>
-<li>
-<a href="#">Contact</a>
-</li>
-</ul>
-<div class="mb-5">
-<h3 class="h6">Subscribe for newsletter</h3>
-<form action="#" class="colorlib-subscribe-form">
-<div class="form-group d-flex">
-<div class="icon"><span class="icon-paper-plane"></span></div>
-<input type="text" class="form-control" placeholder="Enter Email Address">
-</div>
-</form>
-</div>
-<div class="footer">
-<p>
-Copyright ©<script>document.write(new Date().getFullYear());</script>2022 All rights reserved | This template is made with <i class="icon-heart" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib.com</a>
-</p>
-</div>
-</div>
-</nav>
+<div w3-include-html="side-navbar">
 
-<div id="content" class="p-4 p-md-5 pt-5">
-<h2 class="mb-4">Sidebar #02</h2>
-<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
 </div>
-</div>
-<script src="assets/js/jquery.min.js"></script>
-<script src="assets/js/popper.js"></script>
-<script src="assets/js/bootstrap.min.js"></script>
-<script src="assets/js/main.js"></script>
-<script defer src="https://static.cloudflareinsights.com/beacon.min.js/vaafb692b2aea4879b33c060e79fe94621666317369993" data-cf-beacon="{" rayId":"760ca7ace946904e","token":"cd0b4b3a733644fc843ef0b185f98241","version":"2022.10.3","si":100}" crossorigin="anonymous"></script>
 
-</body></html>
+    <style>
+      .box-shadow {
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 3px 10px 0 rgba(0, 0, 0, 0.1);
+      }
+
+      .box-shadow:hover {
+        box-shadow: 0px 0px 5px 5px rgba(0, 0, 0, 0.2), 0 0px 14px 0 rgba(0, 0, 0, 0.16);
+
+      }
+    </style>
+
+    <div id="content">
+      <div class="jumbotron jumbotron-fluid" style="background-color: #585975;">
+        <div class="container" style="padding-top: 25px;">
+          <div class="row justify-content-center" style="padding-top: 25px;">
+            <div class="col-12 col-sm-8 justify-content-center">
+              <h1 class="display-4" style="text-align: center; color: white;">World's biggest meme collection</h1>
+              <p class="lead" style="text-align: center; color: white;">Find the right meme for every situation</p>
+              <p style="text-align: center; color: white;">Millions of memes featuring videos, GIFs, pictures and audio
+                clips.</p>
+              <form class="d-flex" style="text-align: center;">
+                <div class="input-group">
+                  <input type="text" class="form-control" placeholder="Search">
+                  <button type="button" class="btn btn-secondary"><i class="bi-search"></i></button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="container-fluid px-4">
+        <div class="row justify-content-between gx-2">
+          <div class="col-6 col-lg-4 col-xl-2 col-md-4 p-2 text-white mb-3" style="max-width: 18rem;">
+            <div class="card box-shadow">
+              <img class="card-img-top" src="assets/images/card.jpg" alt="Card image cap">
+            </div>
+          </div>
+
+          <div class="col-6 col-lg-4 col-xl-2 col-md-4 p-2 text-white mb-3" style="max-width: 18rem;">
+            <div class="card box-shadow">
+              <img class="card-img-top" src="assets/images/card.jpg" alt="Card image cap">
+            </div>
+          </div>
+
+          <div class="col-6 col-lg-4 col-xl-2 col-md-4 p-2 text-white mb-3" style="max-width: 18rem;">
+            <div class="card box-shadow">
+              <img class="card-img-top" src="assets/images/card.jpg" alt="Card image cap">
+            </div>
+          </div>
+
+          <div class="col-6 col-lg-4 col-xl-2 col-md-4 p-2 text-white mb-3" style="max-width: 18rem;">
+            <div class="card box-shadow">
+              <img class="card-img-top" src="assets/images/card.jpg" alt="Card image cap">
+            </div>
+          </div>
+
+          <div class="col-6 col-lg-4 col-xl-2 col-md-4 p-2 text-white mb-3" style="max-width: 18rem;">
+            <div class="card box-shadow">
+              <img class="card-img-top" src="assets/images/card.jpg" alt="Card image cap">
+            </div>
+          </div>
+
+          <div class="col-6 col-lg-4 col-xl-2 col-md-4 p-2 text-white mb-3" style="max-width: 18rem;">
+            <div class="card box-shadow">
+              <img class="card-img-top" src="assets/images/card.jpg" alt="Card image cap">
+            </div>
+          </div>
+
+          <div class="col-6 col-lg-4 col-xl-2 col-md-4 p-2 text-white mb-3" style="max-width: 18rem;">
+            <div class="card box-shadow">
+              <img class="card-img-top" src="assets/images/card.jpg" alt="Card image cap">
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="assets/js/jquery.min.js"></script>
+  <script src="assets/js/popper.js"></script>
+  <script src="assets/js/bootstrap.min.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script src="controllers/general-utilities.js"></script>
+
+
+</body>
+
+</html>
