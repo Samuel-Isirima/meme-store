@@ -15,30 +15,42 @@
     </style>
 
     <div id="content">
-      <div class="container-fluid px-4" style="padding-top: 70px;">
+      <div class="container-fluid px-4" style="padding-top: 100px;">
         <div class="row justify-content-center gx-2">
           
-                    <div class="col-8 col-lg-5 col-xl-4 col-md-4 p-2 text-white mb-3" style="max-width: 18rem;">
+                    <div class="col-12 col-lg-5 col-xl-4 col-md-4 p-2 text-white mb-3 box">
+                      <div class="row">
+                          <div class="col-12 col-lg-5 col-xl-12 col-md-4 p-2 text-white mb-3">
                         <div class="card">
                           <img class="card-img-top" src="assets/images/card.jpg" alt="Card image cap">
                         </div>
+                        <div class="center-align" style="margin-top: 10px;">
+                            <label class="btn btn-primary btn-sm select-image-btn" im-indx=1>
+                                <span></span> Upload File<input class="meme-upload-input" name="meme" class="meme" type="file" hidden>
+                            </label>
+                        </div>
+                        </div>
                       </div>
+                    </div>
 
-                      <div class="col-8 col-lg-5 col-xl-4 col-md-4 p-2 mb-3" style="max-width: 18rem;">
+                      <div class="col-12 col-lg-5 col-xl-4 col-md-4 p-2 mb-3">
                         
-                            <div class="form-group center-align">
+                            <div class="form-group" style="margin-top: 15px;">
                                 <label for="title-input">Expense title</label>
                                 <input type="text" class="form-control" style="background-color: rgb(233, 230, 230);">
                             </div>
 
-                            <div class="form-group center-align">
+                            <div class="form-group">
                                 <label for="description-input">Description</label>
                                 <textarea style="background-color:rgb(233, 230, 230); width: 100%;" rows="5"></textarea>
                             </div>
 
                             <div class="form-group">
-                                <label for="title-input">Expense title</label>
-                                <input type="text" class="form-control" id="title-input" >
+                                <label for="title-input">Tags</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" style="background-color: rgb(233, 230, 230);" placeholder="Search">
+                                    <button type="button" class="btn btn-secondary">add tag</button>
+                                  </div>
                             </div>
                         </div>
 

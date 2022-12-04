@@ -14,6 +14,7 @@ tags_input = `.tai0`
 addTagButton = `.atb0`
 tagSearchSuggestion = `.tss013`
 resultContainer = `.rco0`
+memeFileInput = `.meme`
 
 
 const validationErrors = [{tag: "title", error: ""}, {tag: "description", error: ""}]
@@ -371,4 +372,94 @@ const tagSearchSuggestionUI = (tag) =>
 return ` <span class="tss-0 tss013 tag-search-suggestion-result" tag="${tag}" id="tag-${tag}">${tag}</span>
     `
 
+}
+
+
+/*
+Code for handling file upload UX
+1. Get file type
+2. Display file name
+3. For image: Preview Image //Update: Render edit modal
+   For video: Load and Render play functionalities //Update: Render cut modal
+   For audio: Load Render Audio Image and play functionalities //Update: Render cut modal
+   For GIF: Render Nothing
+*/
+
+
+const videoPreviewPlayerUI = () =>
+{
+    return ` 
+    <div class="col-6 col-lg-3">           
+    <video class="video-js MS-video-preview" preload="auto" controls
+    data-setup="{}"  uier=meme-video-preview>
+    </video>
+    </div>`
+}
+
+const imagePreviewPlayerUI = (videoPath) =>
+{
+    return `
+    <div class="col-6 col-lg-3">           
+    <img class="image-js MS-image-preview" uier=meme-image-preview />
+    </div>` 
+}
+
+const audioPreviewPlayerUI = (videoPath) =>
+{
+    return `
+    <div class="col-6 col-lg-3">           
+    <img class="image-js MS-image-preview" uier=meme-image-preview />
+    <audio class="aud" controls src=""></audio>
+    </div>` 
+}
+
+
+$(document).on(`change`, memeFileInput, (event) => 
+{
+event.preventDefault()
+/*
+Delete all data set for a probable previous file selection
+*/
+
+//First get the file type by mime
+
+//Based on mime type, set file type
+
+//Based on file type, load preview image, audio or video
+file = event.target.files[0]
+let blobURL = URL.createObjectURL(file)
+
+fileMime = blobURL.type
+
+fileMimesToTypeMap = [["image/jpeg","image/png","image/webp","image/gif"]
+                     ,["audio/webm",audio/wave, audio/wav, audio/x-wav, audio/x-pn-wav, audio/webm]
+                     ,["video/webm", "video/3gpp", "video/x-flv"]]
+
+if(fileMime in)
+
+switch(fileType)
+    {
+        case `IMAGE`:
+            {
+            loadImageFilePreview(event.target.files[0])
+            break
+            }
+
+        case `VIDEO`:
+            {
+            loadVideoFilePreview(event.target.files[0])
+            break
+            }
+        
+        case `AUDIO`:
+            {
+            loadAudioFilePreview(event.target.files[0])
+            break
+            }
+    }
+})
+
+
+const loadImageFilePreview = (file) =>
+{
 }
