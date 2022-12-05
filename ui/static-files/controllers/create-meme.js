@@ -14,7 +14,8 @@ tags_input = `.tai0`
 addTagButton = `.atb0`
 tagSearchSuggestion = `.tss013`
 resultContainer = `.rco0`
-memeFileInput = `.meme`
+memeFileInput = `.upload-input`
+mediaPreviewContainer = `.mpc`
 
 
 const validationErrors = [{tag: "title", error: ""}, {tag: "description", error: ""}]
@@ -389,34 +390,31 @@ Code for handling file upload UX
 const videoPreviewPlayerUI = () =>
 {
     return ` 
-    <div class="col-6 col-lg-3">           
-    <video class="video-js MS-video-preview" preload="auto" controls
+    <video class="video-js MS-video-preview-player" preload="auto" controls
     data-setup="{}"  uier=meme-video-preview>
-    </video>
-    </div>`
+    </video>`
 }
 
-const imagePreviewPlayerUI = (videoPath) =>
+const imagePreviewUI = () =>
 {
     return `
-    <div class="col-6 col-lg-3">           
-    <img class="image-js MS-image-preview" uier=meme-image-preview />
-    </div>` 
+    <img class="image-js MS-image-preview img-fluid card-img-top" uier=meme-image-preview />
+    ` 
 }
 
 const audioPreviewPlayerUI = (videoPath) =>
 {
     return `
-    <div class="col-6 col-lg-3">           
-    <img class="image-js MS-image-preview" uier=meme-image-preview />
-    <audio class="aud" controls src=""></audio>
-    </div>` 
+    <img class="image-js MS-image-preview card-img-top img-fluid" uier=meme-image-preview src="assets/images/guitar.jpeg"/>
+    <audio class="aud MS-audio-preview-player" controls src=""></audio>
+    ` 
 }
 
 
 $(document).on(`change`, memeFileInput, (event) => 
 {
-event.preventDefault()
+console.log('input changed')
+//event.preventDefault()
 /*
 Delete all data set for a probable previous file selection
 */
@@ -426,40 +424,78 @@ Delete all data set for a probable previous file selection
 //Based on mime type, set file type
 
 //Based on file type, load preview image, audio or video
+var file, fileType
 file = event.target.files[0]
+
 let blobURL = URL.createObjectURL(file)
 
-fileMime = blobURL.type
+fileMime = file.type
 
-fileMimesToTypeMap = [["image/jpeg","image/png","image/webp","image/gif"]
-                     ,["audio/webm",audio/wave, audio/wav, audio/x-wav, audio/x-pn-wav, audio/webm]
-                     ,["video/webm", "video/3gpp", "video/x-flv"]]
+fileMimesToTypeMap = [["image/jpeg", "image/png", "image/webp", "image/gif"]
+                     ,["audio/webm", "audio/wave", "audio/wav", "audio/mpeg", "audio/x-wav", "audio/x-pn-wav", "audio/webm"]
+                     ,["video/webm", "video/3gpp", "video/mp4", "video/x-flv"]]
 
-if(fileMime in)
+console.log(fileMime)
+console.log(fileMimesToTypeMap[0])
+
+if(fileMimesToTypeMap[0].includes(fileMime))
+{
+    fileType = `IMAGE`
+}
+else if(fileMimesToTypeMap[1].includes(fileMime))
+{
+    fileType = `AUDIO`
+}
+else if(fileMimesToTypeMap[2].includes(fileMime))
+{
+    fileType = `VIDEO`
+}
 
 switch(fileType)
     {
         case `IMAGE`:
             {
-            loadImageFilePreview(event.target.files[0])
+            loadImageFilePreview(blobURL)
             break
             }
 
         case `VIDEO`:
             {
-            loadVideoFilePreview(event.target.files[0])
+            loadVideoFilePreview(blobURL, fileMime)
             break
             }
         
         case `AUDIO`:
             {
-            loadAudioFilePreview(event.target.files[0])
+            loadAudioFilePreview(blobURL)
             break
             }
     }
 })
 
 
-const loadImageFilePreview = (file) =>
+const loadImageFilePreview = (blobURL) =>
 {
+$(mediaPreviewContainer).empty()
+$(mediaPreviewContainer).append(imagePreviewUI())
+$(`.MS-image-preview`).attr(`src`, blobURL)
+}
+
+
+const loadAudioFilePreview = (blobURL) =>
+{
+$(mediaPreviewContainer).empty()
+$(mediaPreviewContainer).append(audioPreviewPlayerUI())
+$(`.MS-audio-preview-player`).attr(`src`, blobURL)
+}
+
+
+
+const loadVideoFilePreview = (blobURL, sourceType) =>
+{
+$(mediaPreviewContainer).empty()
+$(mediaPreviewContainer).append(videoPreviewPlayerUI())
+$(`.MS-video-preview-player`).html(`<source src="${blobURL}" type="${sourceType}"></source>`)
+$(`.MS-video-preview-player`)[0].load()
+//$(`.MS-video-preview-player`)[0].load()
 }
