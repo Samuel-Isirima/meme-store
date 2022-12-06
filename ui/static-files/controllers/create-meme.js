@@ -431,9 +431,16 @@ let blobURL = URL.createObjectURL(file)
 
 fileMime = file.type
 
-fileMimesToTypeMap = [["image/jpeg", "image/png", "image/webp", "image/gif"]
-                     ,["audio/webm", "audio/wave", "audio/wav", "audio/mpeg", "audio/x-wav", "audio/x-pn-wav", "audio/webm"]
-                     ,["video/webm", "video/3gpp", "video/mp4", "video/x-flv"]]
+fileMimesToTypeMap = [
+                      ["image/jpeg", "image/png", "image/webp", "image/gif"],  /* Array index 0 holds mime types for images*/
+
+                      ["audio/webm", "audio/wave", "audio/wav", "audio/mpeg",  /* Array index 1 holds mime types for audio files*/
+                      "audio/x-wav", "audio/x-pn-wav", "audio/webm"],
+
+                      ["video/webm", "video/3gpp", "video/mp4", "video/x-flv",  /* Array index 2 holds mime types for video files*/
+                      "video/x-ms-wmv", "video/MP2T", "application/x-mpegURL",
+                      "video/x-flv", "video/quicktime", "	video/x-msvideo"]
+                    ]
 
 console.log(fileMime)
 console.log(fileMimesToTypeMap[0])
@@ -497,5 +504,5 @@ $(mediaPreviewContainer).empty()
 $(mediaPreviewContainer).append(videoPreviewPlayerUI())
 $(`.MS-video-preview-player`).html(`<source src="${blobURL}" type="${sourceType}"></source>`)
 $(`.MS-video-preview-player`)[0].load()
-//$(`.MS-video-preview-player`)[0].load()
+$(`.MS-video-preview-player`)[0].play()
 }
