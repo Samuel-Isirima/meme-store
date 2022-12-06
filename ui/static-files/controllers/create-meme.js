@@ -33,6 +33,7 @@ else
     {
         removeValidationError("title")
     }
+    verifyInputs()
 })
 
 
@@ -46,7 +47,8 @@ $(document).on('input', descriptionInput, function (e){
         {
             removeValidationError("description")
         }
-})
+    verifyInputs()
+    })
 
 
 const removeValidationError = (tag) =>
@@ -59,7 +61,6 @@ const removeValidationError = (tag) =>
     {
         return false
     }
-    
     return !!validationErrors.splice(errorIndex, 1);
 }
 
@@ -231,6 +232,7 @@ function renderTagSuggestions(tags)
 
 
 $(document).on('click', create_meme_button, (event) => {
+    console.log('clicked')
     create_meme()
 })
 
@@ -246,8 +248,9 @@ const create_meme = () => {
     $(create_meme_button).prop('disabled', true)
     $(progress_bar_container).append(progress_bar_object)
 
-    var form = $('#upload-meme-data')[0]
+    var form = $('.upload-meme-data')[0]
     var formdata = new FormData(form)
+    console.log(formdata)
     formdata.set('tags', tags)
     var ajax = new XMLHttpRequest()
     /*
