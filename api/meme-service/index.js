@@ -15,6 +15,7 @@ app.use(cors({ origin: '*' }))
 
 app.use(express.json())
 
+const timeNow = Date.now()
 
 try {
 
@@ -50,8 +51,9 @@ const multerStorage = multer.diskStorage(
 		},
 
 		filename: (request, file, callback) => {
-			const ext = file.mimetype.split("/")[1];
-			callback(null, `${request.body.title}-${Date.now()}.${ext}`)
+			const ext = file.mimetype.split("/")[1]
+			console.log(request.body)
+			callback(null, `${request.body.title.toLowerCase().replace(/ /g,"-")}-${timeNow}.${ext}`)
 		},
 	})
 
@@ -94,7 +96,8 @@ app.post("/api/meme/add", uploadMiddleWare.single("meme-file"), async (req, res)
 			file_type: file_type,
 			tags: tags,
 			mime: file_extension,
-			uploader: { user_uuid: "9poaincjkalskdjha8w3aseukh97w3pasfhush8awoeahr" }
+			uploader: { user_uuid: "9poaincjkalskdjha8w3aseukh97w3pasfhush8awoeahr" },
+			file_location:  `${title.toLowerCase().replace(/ /g,"-")}-${timeNow}.${file_extension}` 
 		})
 
 		/*
@@ -113,8 +116,11 @@ app.post("/api/meme/add", uploadMiddleWare.single("meme-file"), async (req, res)
 				*/
 			}
 		})
+	
+		res.status(200).json({ message: "Meme uploaded successfully ", link: result.title.toLowerCase().replace(/ /g,"-"), "uuid":result._id})
 	}
 	catch (error) {
+		console.log(error)
 		res.status(500).json({ message: "An unexpected error ocurred while uploading the meme. Please try again later." })
 	}
 

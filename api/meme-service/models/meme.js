@@ -32,7 +32,12 @@ const meme_schema = mongoose.Schema({
                          required: true
                          }
                 
-              }
+              },
+    file_location: {
+                        type: String,
+                        required: true
+                   }
+
 })
 
 const meme_model = mongoose.model('memes', meme_schema)

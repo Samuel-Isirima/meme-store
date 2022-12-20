@@ -1,3 +1,4 @@
 node_modules/
 api/auth-service/node_modules
 api/meme-service/node_modules
+api/meme-service/temp-file-store

@@ -248,10 +248,27 @@ const create_meme = () => {
     $(create_meme_button).prop('disabled', true)
     $(progress_bar_container).append(progress_bar_object)
 
+    /*
     var form = $('.upload-meme-data')[0]
-    var formdata = new FormData(form)
-    console.log(formdata)
+
+    I normally should be able to upload the whole form data like this to the server
+    but the library I'm using on the server to handle the file upload (multer) has a 
+    problem with the file being uploaded being the first entry in the formdata object 
+    sent in the request.
+
+    If the file in a form is the first in the formdata being sent, mutler would have an
+    empty request.body object, hence, the name of the file cannot be obtained.
+
+    The only way around it is to reorder the formdata entries manually, which is what I have done
+    below
+
+    For other projects, I will have to use another library for handling file uploads
+    */
+    var formdata = new FormData()
+    formdata.set('title', title)
+    formdata.set('description', description)
     formdata.set('tags', tags)
+    formdata.set('meme-file', $(memeFileInput)[0].files[0])
     var ajax = new XMLHttpRequest()
     /*
     Add event listeners to watch the data upload process
@@ -311,10 +328,13 @@ function abortHandler(event) {
 
 
 function process_response(response) {
-    try {
-        responseJSON = JSON.parse(reponse.responseText)
+    console.log(`result ${response.responseText}`)
+
+    try{
+    responseJSON = JSON.parse(response.responseText)
     }
-    catch (error) {
+    catch(error)
+    {
         $(result_container).empty()
         $(result_container).append(`<p style="color:red;">An unexpected error has occured. Please try again later.</p>`)
         $(create_meme_button).prop('disabled', false)
@@ -322,7 +342,7 @@ function process_response(response) {
 
         return
     }
-
+    
     if (response.status != 200) {
         $(result_container).empty()
         $(result_container).append(`<p style="color:red;">${responseJSON.message}</p>`)
@@ -337,7 +357,9 @@ function process_response(response) {
     $(result_container).append(`<p style="color:green;">${responseJSON.message}</p>`)
     //Now redirect to the newly created meme's page
     setTimeout(() => {
-        window.location = `./meme/${responseJSON.data.link}/${responseJSON.data.uuid}`
+        
+        //window.location = `./meme/${response.responseText.link}/${response.responseText.uuid}`
+        console.log(`./meme/${responseJSON.link}/${responseJSON.uuid}`)
     }, 1500);
 
 
