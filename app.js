@@ -11,6 +11,12 @@ app.get('/home', (req, res) =>
 res.status(200).sendFile(path.resolve(__dirname, './ui/index.html'))
 })
 
+
+app.get('/', (req, res) => 
+{
+res.status(200).sendFile(path.resolve(__dirname, './ui/index.html'))
+})
+
 app.get('/head', (req, res) => 
 {
 res.status(200).sendFile(path.resolve(__dirname, './ui/head.html'))

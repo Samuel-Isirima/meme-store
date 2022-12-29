@@ -19,7 +19,7 @@ const timeNow = Date.now()
 
 try {
 
-	mongoose.connect("mongodb://127.0.0.1:27017/meme-service",
+	mongoose.connect("mongodb://127.0.0.1:27017/meme-service", 
 		() => {
 			console.log("Meme-Service DB connected");
 		})
@@ -104,18 +104,26 @@ app.post("/api/meme/add", uploadMiddleWare.single("meme-file"), async (req, res)
 		Add the tags to the database
 		*/
 		tags = tags.split(`,`)
+		try{
+
+		
 		tags.forEach(entry => {
 			try {
 				tagModel.create({ tag: entry })
 			}
 			catch (error /*Most likely a duplicate key error */) {
-				console.log('Cannot add tag : ', entry, '. Why? error => ', error)
+				//console.log('Cannot add tag : ', entry, '. Why? error => ', error)
 				/*
 				A meme tag not being recorded in the database is no cause for alarm
 				Just catch the error, and possibly log it, but no effect on program flow
 				*/
 			}
 		})
+	}
+	catch(error)
+	{
+		console.log(console.error())
+	}
 	
 		res.status(200).json({ message: "Meme uploaded successfully ", link: result.title.toLowerCase().replace(/ /g,"-"), "uuid":result._id})
 	}
