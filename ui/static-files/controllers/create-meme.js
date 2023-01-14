@@ -18,38 +18,60 @@ memeFileInput = `.upload-input`
 mediaPreviewContainer = `.mpc`
 
 
-const validationErrors = [{tag: "title", error: ""}, {tag: "description", error: ""}]
+const validationErrors = [{tag: "title", error: "title field is required"}, {tag: "description", error: "description is required"}, {tag: "file", error: "please select a media file"}]
 tags = []
 title = description = ''
 
 
-$(document).on('input', titleInput, function (e){
-title = $(this).val()
-if(!validateText(title))
+const validateMediaFile = (file) =>
+{
+removeValidationError("file")
+
+if(!file)
     {
-        validationErrors.push({tag:"title", error:"Invalid title"})
-    }
-else
-    {
-        removeValidationError("title")
+        validationErrors.push({tag:"file", error:"please select a media file"})
     }
     verifyInputs()
-})
+}
 
+const validateTitle = (title) =>
+{
+removeValidationError("title")
+    if(!validateText(title))
+    {
+        validationErrors.push({tag:"title", error:"Please provide a valid title"})
+    }
+    verifyInputs()
+}
 
-$(document).on('input', descriptionInput, function (e){
-    description = $(this).val()
+const validateDescription = (description) =>
+{
+    removeValidationError("description")
     if(!validateText(description))
         {
             validationErrors.push({tag:"description", error:"Please provide a valid description"})
         }
-    else
-        {
-            removeValidationError("description")
-        }
-    verifyInputs()
-    })
+        verifyInputs()
+}
 
+
+$(document).on('input', titleInput, function (e)
+{
+title = $(this).val()
+validateTitle(title)
+})
+
+
+$(document).on('input', descriptionInput, function (e)
+{
+description = $(this).val()
+validateDescription(description)
+})
+
+$(document).on('input', memeFileInput, function (e)
+{
+validateMediaFile($(this)[0].files[0])
+})
 
 const removeValidationError = (tag) =>
 {
@@ -68,12 +90,11 @@ const removeValidationError = (tag) =>
 const verifyInputs = () =>
 {
 
-
-    $(resultContainer).empty()
+    $(result_container).empty()
     //Check for errors
     if(validationErrors.length > 0)
     {
-        $(resultContainer).append(`<p style="color: red;">${validationErrors[0].error}</p>`)
+        $(result_container).append(`<p style="color: red;">${validationErrors[0].error}</p>`)
         $(create_meme_button).prop('disabled', true)
     }
     else
@@ -82,6 +103,8 @@ const verifyInputs = () =>
     }
 }
 
+// validateTitle($(titleInput).val())
+// validateDescription($(descriptionInput).val())
 verifyInputs()
 
 
@@ -366,7 +389,7 @@ function process_response(response) {
 }
 
 
-const validateText = (text) =>
+function validateText(text)
 {
     if(text == '' || text == undefined || text == null || text == ' ')
 	{return false}

@@ -34,12 +34,13 @@ For meme uploading
 //File filtering
 const multerFilter = (request, file, callback) => {
 	console.log('File type', file.mimetype.split("/")[1])
-	allowedFileTypes = ["mp3", "mp4", "m4a", "gif", "png", "wmv", "3gp", "m3u8", "mov", "flv", "wav", "jpg", "tiff", "jpeg"]
+	allowedFileTypes = ["mp3", "mp4", "m4a", "gif", "png", "wmv", "3gp", "m3u8", "mov", "flv", "wav", "jpg", "tiff", "jpeg", "mpeg"]
 	if (allowedFileTypes.includes(file.mimetype.split("/")[1].toLowerCase())) {
 		callback(null, true)
 	}
 	else {
-		callback(new Error("Unsupported file type"), false)
+		request.fileValidationError = `Unsupported file type`
+		return callback(null, false, request.fileValidationError)
 	}
 }
 
@@ -64,12 +65,23 @@ uploadMiddleWare = multer({
 	fileFilter: multerFilter,
 })
 
-audioFileExtensions = ["mp3", "wma", "flv", "wav"]
+audioFileExtensions = ["mp3", "wma", "flv", "wav", "mpeg"]
 videoFileExtensions = ["mp4", "wmv", "3gp", "m4a"]
 imageFileExtensions = ["jpg", "gif", "jpeg", "png", "tiff"]
 
 
 app.post("/api/meme/add", uploadMiddleWare.single("meme-file"), async (req, res) => {
+	if(req.fileValidationError)
+	{
+		console.log(req.fileValidationError)
+		res.status(500).json({ message: "Unsupported file type" })
+	}
+
+	if(!req.file)
+	{
+		res.status(500).json({ message: "Please select a supported media file" })
+		return
+	}
 	/*
 	Because of the multer middleware above, the file would 
 	*/
@@ -88,6 +100,18 @@ app.post("/api/meme/add", uploadMiddleWare.single("meme-file"), async (req, res)
 	description = req.body.description
 	tags = req.body.tags
 
+	if(!validateText(title))
+	{
+		res.status(500).json({ message: "Please provide a valid title" })
+		return
+	}
+
+	if(!validateText(description))
+	{
+		res.status(500).json({ message: "Please provide a valid description" })
+		return
+	}
+
 	try {
 		//Create a meme entry in the database
 		result = await memeModel.create({
@@ -104,26 +128,13 @@ app.post("/api/meme/add", uploadMiddleWare.single("meme-file"), async (req, res)
 		Add the tags to the database
 		*/
 		tags = tags.split(`,`)
-		try{
-
-		
 		tags.forEach(entry => {
-			try {
-				tagModel.create({ tag: entry })
-			}
-			catch (error /*Most likely a duplicate key error */) {
-				//console.log('Cannot add tag : ', entry, '. Why? error => ', error)
-				/*
-				A meme tag not being recorded in the database is no cause for alarm
-				Just catch the error, and possibly log it, but no effect on program flow
-				*/
-			}
+			tagModel.create({ tag: entry }, function (error, small)
+			{
+				if(error)
+					console.log(`${error}`)
+			})
 		})
-	}
-	catch(error)
-	{
-		console.log(console.error())
-	}
 	
 		res.status(200).json({ message: "Meme uploaded successfully ", link: result.title.toLowerCase().replace(/ /g,"-"), "uuid":result._id})
 	}
@@ -259,3 +270,10 @@ app.listen(PORT, () => {
 });
 
 
+function validateText(text)
+{
+    if(text == '' || text == undefined || text == null || text == ' ')
+	{return false}
+	else
+	{return true}
+}

@@ -30,9 +30,32 @@ console.log(error)
 app.post("/auth/sign-up", async (req, res) => 
 {
 
-    const new_user = req.body
-    result = await sign_up(new_user)
-    res.status(result.code).json(result)
+   
+const {username, email, password} = req.body
+//Check if username already exists
+
+var userAccount = await user_model.findOne({username: {"$regex": `^${username}$`, $options: "i"}}).lean()
+if(userAccount)
+{
+    return res.status(400).json({message: "This username has already been taken"})
+}
+
+//Check if email has been used
+userAccount = await user_model.findOne({email: {"$regex": `^${email}$`, $options: "i"}}).lean()
+if(userAccount)
+{
+   return res.status(400).json({message: "This username has already been taken"})
+}
+
+const password_hash = password
+    userAccountObject = await user_model.findOne({email: {"$regex": `^${email}$`, $options: "i"}, password: password_hash}).lean()
+    if(!userAccountObject)
+    {
+        return res.status(403).json({message: "Incorrect password"})
+    }
+
+accessToken = jwt_operations.generateAccessToken(userAccountObject)
+return res.status(200).json({"accessToken": accessToken, "message": "login successful"})
 
 })
 
